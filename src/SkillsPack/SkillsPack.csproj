@@ -12,7 +12,7 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>skills-pack</ToolCommandName>
     <PackageId>MackySoft.SkillsPack</PackageId>
-    <Description>Reusable Codex SKILL package distribution tool.</Description>
+    <Description>Reusable Agent Skills package distribution tool.</Description>
     <PackageTags>codex;skills;agent-skills;cli;tool</PackageTags>
   </PropertyGroup>
 
