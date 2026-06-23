@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "skillName": "pr-merge",
+  "displayName": "PR Merge",
+  "description": "現在作業または指定PRを安全にマージする。現在作業をブランチへ載せ、PRを取得または作成し、push、Draft解除、CI待機、必須チェック確認、マージ、リモートブランチクリーンアップまで進める。",
+  "tier": "development",
+  "contentDigest": "67d4aecbdf43895f11ce315df5c0908993459dc88443ac0626c988cc18851a29",
+  "manifestDigest": "aaed7c8a4c21b81d6d6036df4f046239bc83f22dcd939ae992ff8b00f1197b24",
+  "hostArtifacts": [
+    {
+      "host": "claude",
+      "materializedFrontmatterDigest": "8fbdcfb26a5b2464d0d915134e6fcb6fdbdf9a883cf394958cf50852cb5e88e2"
+    },
+    {
+      "host": "copilot",
+      "materializedFrontmatterDigest": "e9dac321647aff992a3fbbe426126d871b45985bfad20bbbf61ccbdd7865a9e7"
+    },
+    {
+      "host": "openai",
+      "path": "agents/openai.yaml",
+      "digest": "7bca9f12e1389900b91f7c69c9ae67dfaccb68bbdfd6299c31e5379bdfa5d2c6",
+      "materializedFrontmatterDigest": "7c33387b95ee033e6d40a730f4b768dfb267b0ff73107fc7aef05aeab5261749"
+    }
+  ]
+}
