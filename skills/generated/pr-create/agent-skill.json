@@ -4,8 +4,9 @@
   "displayName": "PR Create",
   "description": "PR作成依頼を受けたときに、検証・`$push`・PR作成までを一気通貫で実行する。Issueがある場合はIssueを優先して本文とbaseを決定し、Issueが特定できない場合は確認なしでIssueなし運用として継続する。既存Open PRがある場合は更新か新規作成を確認する。",
   "tier": "development",
+  "catalogId": "com.mackysoft.skills-pack",
   "contentDigest": "e8db5957ba60a268a3647d58cbf93716839810594b69ec04a79ba7235d550745",
-  "manifestDigest": "4395a016eed3deca87fe6f2c34bf99e95c31f10ca9625c1dd0d9a038b8816f9f",
+  "manifestDigest": "d50b86ae66863cbf7a2c4ba0d7f70b5422427545d34c0a8a9bbd615839e99450",
   "hostArtifacts": [
     {
       "host": "claude",

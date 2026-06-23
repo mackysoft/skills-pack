@@ -4,8 +4,9 @@
   "displayName": "Commit",
   "description": "変更を責務単位で分割し、Conventional Commits形式の包括的なメッセージでコミットを作成する。",
   "tier": "development",
+  "catalogId": "com.mackysoft.skills-pack",
   "contentDigest": "f4e4d2e34494b183da026bc29a73039e51942e2a974157522be907cf55d27e19",
-  "manifestDigest": "5cd4e1f277e06a9842878282a74a68300b2c9c71b23d871eb9d44350f7eb3b8b",
+  "manifestDigest": "b45750c0763a342c2b0f4a789cb6ae9ad8478d3e8263f61e5775dbea42767a72",
   "hostArtifacts": [
     {
       "host": "claude",

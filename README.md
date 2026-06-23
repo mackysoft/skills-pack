@@ -16,6 +16,7 @@ SkillsPack includes these reusable development workflow skills:
 | Skill | Tier | Purpose |
 | --- | --- | --- |
 | `branch-create` | `development` | Create or reuse task branches with repository naming rules. |
+| `changelog` | `development` | Write reader-facing changelogs, release notes, and PR change summaries. |
 | `code-quality-review` | `development` | Review code for duplication, low cohesion, excess state, and unnecessary abstraction. |
 | `commit` | `development` | Create responsibility-scoped Conventional Commit messages. |
 | `pr-create` | `development` | Verify, push, and create or update pull requests. |
