@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "skillName": "code-quality-review",
+  "displayName": "Code Quality Review",
+  "description": "コードベース全体または変更差分に対して、既存ユーティリティの再実装、本質的な重複、低凝集、冗長な状態管理、不要抽象化を findings-first でレビューする。品質上の懸念を整理し、改善方向まで含めた指摘を返したいときに使う。",
+  "tier": "development",
+  "references": [
+    "review-playbook.md"
+  ]
+}

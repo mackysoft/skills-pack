@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "skillName": "verification-gate",
+  "displayName": "Verification Gate",
+  "description": "コード変更が一通り終わった挙動確認時、またはPR作成前に、受け入れ判定に必要な検証のみを実行する。実装や設計検討が目的のときは使わない。",
+  "tier": "development",
+  "references": [
+    "checklist.md",
+    "failure_triage.md",
+    "gate_levels.md"
+  ]
+}
