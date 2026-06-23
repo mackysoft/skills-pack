@@ -31,6 +31,7 @@ internal sealed class SkillsExportCommand
         string? output = null,
         string? format = null,
         string[]? tier = null,
+        string[]? skill = null,
         CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -67,9 +68,10 @@ internal sealed class SkillsExportCommand
             return errorResult.ExitCode;
         }
 
-        var normalizedTiers = SkillsCommandOptionNormalizer.NormalizeTiers(
+        var packageSelection = SkillsCommandOptionNormalizer.NormalizeRequiredPackageSelection(
             SkillsPackCommandNames.SkillsExport,
             tier,
+            skill,
             out errorResult);
         if (errorResult is not null)
         {
@@ -77,7 +79,7 @@ internal sealed class SkillsExportCommand
             return errorResult.ExitCode;
         }
 
-        var packagesResult = await packageProvider.GetPackagesAsync(SkillsPackSkillTierLiterals.Defined, normalizedTiers!, cancellationToken).ConfigureAwait(false);
+        var packagesResult = await packageProvider.GetPackagesAsync(SkillsPackSkillTierLiterals.Defined, packageSelection!.Tiers, packageSelection.SkillNames, cancellationToken).ConfigureAwait(false);
         if (!packagesResult.IsSuccess)
         {
             var packageErrorResult = SkillsCommandResultFactory.CreateSkillFailure(SkillsPackCommandNames.SkillsExport, packagesResult.Failure!);
@@ -99,7 +101,8 @@ internal sealed class SkillsExportCommand
             normalizedHost!,
             normalizedFormat.Value,
             reloadGuidance,
-            normalizedTiers!.Select(static item => item.Value).ToArray());
+            packageSelection.Tiers.Select(static item => item.Value).ToArray(),
+            packageSelection.SkillNames);
         commandResultWriter.WriteToStandardOutput(commandResult);
         return commandResult.ExitCode;
     }

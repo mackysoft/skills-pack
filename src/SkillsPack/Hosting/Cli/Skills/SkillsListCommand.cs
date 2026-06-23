@@ -25,13 +25,15 @@ internal sealed class SkillsListCommand
     [Command(SkillsPackCommandNames.ListSubcommand)]
     public async Task<int> ListAsync (
         string[]? tier = null,
+        string[]? skill = null,
         CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var normalizedTiers = SkillsCommandOptionNormalizer.NormalizeOptionalTiers(
+        var packageSelection = SkillsCommandOptionNormalizer.NormalizeOptionalPackageSelection(
             SkillsPackCommandNames.SkillsList,
             tier,
+            skill,
             out var errorResult);
         if (errorResult is not null)
         {
@@ -41,7 +43,8 @@ internal sealed class SkillsListCommand
 
         var catalogResult = await packageProvider.GetPackageCatalogAsync(
                 SkillsPackSkillTierLiterals.Defined,
-                normalizedTiers!,
+                packageSelection!.Tiers,
+                packageSelection.SkillNames,
                 cancellationToken)
             .ConfigureAwait(false);
         var commandResult = catalogResult.IsSuccess

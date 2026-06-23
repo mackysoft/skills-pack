@@ -8,4 +8,5 @@ internal sealed record SkillsTargetOptions (
     SkillScopeKind Scope,
     string? RepositoryRoot,
     string? TargetDir,
-    IReadOnlyList<SkillTier> Tiers);
+    IReadOnlyList<SkillTier> Tiers,
+    IReadOnlyList<string> SkillNames);

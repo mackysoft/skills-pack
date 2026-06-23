@@ -12,6 +12,7 @@ internal static class SkillsTargetOptionResolver
         string? repoRoot,
         string? targetDir,
         string[]? tier,
+        string[]? skill,
         SkillHostAdapterSet hostAdapters,
         out CommandResult? errorResult)
     {
@@ -47,9 +48,10 @@ internal static class SkillsTargetOptionResolver
             return null;
         }
 
-        var normalizedTiers = SkillsCommandOptionNormalizer.NormalizeTiers(
+        var packageSelection = SkillsCommandOptionNormalizer.NormalizeRequiredPackageSelection(
             command,
             tier,
+            skill,
             out errorResult);
         if (errorResult is not null)
         {
@@ -61,6 +63,7 @@ internal static class SkillsTargetOptionResolver
             normalizedScope.Value,
             repositoryRoot,
             targetDir,
-            normalizedTiers!);
+            packageSelection!.Tiers,
+            packageSelection.SkillNames);
     }
 }

@@ -37,6 +37,7 @@ internal sealed class SkillsUninstallCommand
         bool dryRun = false,
         bool force = false,
         string[]? tier = null,
+        string[]? skill = null,
         CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -48,6 +49,7 @@ internal sealed class SkillsUninstallCommand
             repoRoot,
             targetDir,
             tier,
+            skill,
             hostAdapters,
             out var errorResult);
         if (errorResult is not null)
@@ -56,7 +58,7 @@ internal sealed class SkillsUninstallCommand
             return errorResult.ExitCode;
         }
 
-        var packagesResult = await packageProvider.GetPackagesAsync(SkillsPackSkillTierLiterals.Defined, target!.Tiers, cancellationToken).ConfigureAwait(false);
+        var packagesResult = await packageProvider.GetPackagesAsync(SkillsPackSkillTierLiterals.Defined, target!.Tiers, target.SkillNames, cancellationToken).ConfigureAwait(false);
         if (!packagesResult.IsSuccess)
         {
             var packageErrorResult = SkillsCommandResultFactory.CreateSkillFailure(SkillsPackCommandNames.SkillsUninstall, packagesResult.Failure!);
@@ -79,7 +81,8 @@ internal sealed class SkillsUninstallCommand
             target.Scope,
             target.RepositoryRoot,
             reloadGuidance,
-            target.Tiers.Select(static item => item.Value).ToArray());
+            target.Tiers.Select(static item => item.Value).ToArray(),
+            target.SkillNames);
         commandResultWriter.WriteToStandardOutput(commandResult);
         return commandResult.ExitCode;
     }
