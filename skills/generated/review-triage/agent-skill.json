@@ -4,8 +4,9 @@
   "displayName": "Review Triage",
   "description": "貼り付けられた、サブエージェントから返された、または自動レビューで生成されたコードレビュー・設計レビュー指摘を対象コード・仕様・関連資料と照合し、差分がある場合はその文脈も含めて各指摘の正当性を判定して `採用 / 却下 / 保留 / 要確認` にトリアージし、採用項目を束ねた改善設計と次工程を整理する。レビュー返信作成や実装変更そのものが主目的のときは使わない。",
   "tier": "development",
+  "catalogId": "com.mackysoft.skills-pack",
   "contentDigest": "e0ae7a336c901961a822a5f47bbffdcccbc83191b227f0bd44252c07d9269e7b",
-  "manifestDigest": "a48f49e85e12ba81a86afc88a5c55d6de6b94e6fc47896850f514e18fd32cc17",
+  "manifestDigest": "b3eedaa56f04fdb1392af3e254b8a26fdf0357901d87a6b66c481ce7aa1b7d09",
   "hostArtifacts": [
     {
       "host": "claude",

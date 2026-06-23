@@ -69,6 +69,11 @@ if ! grep -F '"skillName":"commit"' <<< "${skills_list}" >/dev/null; then
   exit 1
 fi
 
+if ! grep -F '"skillName":"changelog"' <<< "${skills_list}" >/dev/null; then
+  echo "skills-pack skills list did not include changelog." >&2
+  exit 1
+fi
+
 SKILLS_LIST_JSON="${skills_list}" python3 - <<'PY'
 import json
 import os
@@ -82,7 +87,7 @@ actual = [
 ]
 expected = [
     ("general", 0),
-    ("development", 11),
+    ("development", 12),
     ("personal", 0),
 ]
 if actual != expected:
@@ -103,9 +108,9 @@ root = json.loads(os.environ["MULTI_TIER_LIST_JSON"])
 payload = root.get("payload") or {}
 tiers = payload.get("tiers")
 skill_count = len(payload.get("skills", []))
-if tiers != ["general", "development"] or skill_count != 11:
+if tiers != ["general", "development"] or skill_count != 12:
     print(
-        f"skills-pack skills list did not support comma-separated tier selection. Expected tiers ['general', 'development'] with 11 skills. Actual tiers: {tiers}. Actual skill count: {skill_count}",
+        f"skills-pack skills list did not support comma-separated tier selection. Expected tiers ['general', 'development'] with 12 skills. Actual tiers: {tiers}. Actual skill count: {skill_count}",
         file=sys.stderr,
     )
     sys.exit(1)
@@ -115,6 +120,11 @@ export_path="${tool_path}/exported-skills"
 "${tool_path}/skills-pack" skills export --host openai --tier development --output "${export_path}" >/dev/null
 if [[ ! -f "${export_path}/commit/SKILL.md" ]]; then
   echo "skills-pack skills export did not materialize commit/SKILL.md." >&2
+  exit 1
+fi
+
+if [[ ! -f "${export_path}/changelog/SKILL.md" ]]; then
+  echo "skills-pack skills export did not materialize changelog/SKILL.md." >&2
   exit 1
 fi
 

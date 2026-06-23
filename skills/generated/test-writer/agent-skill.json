@@ -4,8 +4,9 @@
   "displayName": "Test Writer",
   "description": "契約と不変条件を根拠に、新規または更新の自動テストを1件ずつ設計・作成する。TDDで進め、同型テストを統合し、全テストへサイズ属性を必須付与する。実行・フォーマット・検証ゲートの実施が主目的のときは使わない。",
   "tier": "development",
+  "catalogId": "com.mackysoft.skills-pack",
   "contentDigest": "5694acb592ba54d4ff5df882da2addbb92c6e02c6e517acd4f855944e0a5b590",
-  "manifestDigest": "e92742682b3d3773fd0ba9c9ce71a6b17488b070e057b4a98d8dd433cd9b72b1",
+  "manifestDigest": "44d1b3a8cc08e402c276a64475af937d61598b6c268e8f0e3b497874f018e659",
   "hostArtifacts": [
     {
       "host": "claude",
