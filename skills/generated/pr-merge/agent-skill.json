@@ -5,8 +5,8 @@
   "description": "現在作業または指定PRを安全にマージする。現在作業をブランチへ載せ、PRを取得または作成し、push、Draft解除、CI待機、必須チェック確認、マージ、リモートブランチクリーンアップまで進める。",
   "tier": "development",
   "catalogId": "com.mackysoft.skills-pack",
-  "contentDigest": "67d4aecbdf43895f11ce315df5c0908993459dc88443ac0626c988cc18851a29",
-  "manifestDigest": "ac9cab2ac67b04a334746374706c0b71424723a9e7603ab73935ef9d5c8ecaa7",
+  "contentDigest": "abf520feea539e63adecc590b39e73c77233264787aeced2940f2049355b2ec7",
+  "manifestDigest": "913737c61e7ebd57f2524a0f4d1868979b7c3df60e2dea7e9334af0aa2cc74f0",
   "hostArtifacts": [
     {
       "host": "claude",

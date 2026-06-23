@@ -78,7 +78,7 @@
 5. チェック待機後に `gh pr view --json headRefOid` を再実行し、`headRefOid` を最新化する。
 
 ## 9. マージを実行する
-1. 次のコマンドでマージを実行する。  
+1. 次のコマンドでマージを実行する。
    `gh pr merge <number> --merge --match-head-commit <headRefOid>`
 2. `already merged` が返る場合は、マージ済みとして後続のクリーンアップへ進む。
 
