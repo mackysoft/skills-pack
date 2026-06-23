@@ -1,4 +1,4 @@
-# SkillsPack - Reusable Agent Skills for repositories and environments
+# SkillsPack - Agent Skills CLI
 
 [![verify](https://github.com/mackysoft/skills-pack/actions/workflows/verify.yaml/badge.svg)](https://github.com/mackysoft/skills-pack/actions/workflows/verify.yaml) [![NuGet](https://img.shields.io/nuget/v/MackySoft.SkillsPack?label=MackySoft.SkillsPack)](https://www.nuget.org/packages/MackySoft.SkillsPack) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
@@ -34,7 +34,7 @@ SkillsPack defines these tiers:
 | --- | --- |
 | `general` | General-purpose reusable workflow skills. |
 | `development` | Code, review, test, Git, and pull request workflow skills. |
-| `personal` | Skills for the author's personal environment and workflow setup. |
+| `personal` | Skills for my personal environment and workflow setup. |
 
 Empty tiers are valid.
 They are still reported by `skills-pack skills list` so automation can discover the full supported tier set.
@@ -59,21 +59,27 @@ List bundled skills, supported hosts, tiers, and package counts:
 skills-pack skills list
 skills-pack skills list --tier development
 skills-pack skills list --tier general,development
+skills-pack skills list --skill changelog
+skills-pack skills list --tier development --skill changelog
 ```
 
-`skills list` treats `--tier` as optional.
-When omitted, it reports every defined tier.
+`skills list` treats `--tier` and `--skill` as optional.
+When omitted, it reports every defined tier and every bundled skill.
+`--skill` selects exact `skillName` values.
+When `--tier` and `--skill` are both specified, the selected skills must match the selected tiers.
 
 Export host-specific skill files:
 
 ```bash
 skills-pack skills export --host openai --tier development --output ./exported-skills
+skills-pack skills export --host openai --skill changelog --output ./exported-skills
 ```
 
 Install skills into a repository:
 
 ```bash
 skills-pack skills install --host openai --scope project --repo-root . --tier development
+skills-pack skills install --host openai --scope project --repo-root . --skill changelog
 ```
 
 Update installed skills:
@@ -100,11 +106,12 @@ Install skills into the current user's host skill directory:
 skills-pack skills install --host openai --scope user --tier development
 ```
 
-For `export`, `install`, `update`, `doctor`, and `uninstall`, `--tier` is required.
-Multiple tiers can be selected with a comma-separated value:
+For `export`, `install`, `update`, `doctor`, and `uninstall`, at least one package selector is required: `--tier` or `--skill`.
+Multiple tiers or skills can be selected with comma-separated values:
 
 ```bash
 skills-pack skills install --host openai --scope project --repo-root . --tier general,development
+skills-pack skills install --host openai --scope project --repo-root . --skill changelog,commit
 ```
 
 Use `--dry-run` before changing installed files:

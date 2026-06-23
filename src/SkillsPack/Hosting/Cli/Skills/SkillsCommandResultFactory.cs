@@ -28,6 +28,7 @@ internal static class SkillsCommandResultFactory
             payload: new
             {
                 tiers = catalog.SelectedTiers.Select(static tier => tier.Value).ToArray(),
+                skillNames = catalog.SelectedSkillNames.ToArray(),
                 availableTiers = catalog.AvailableTiers
                     .Select(static tier => new
                     {
@@ -65,13 +66,15 @@ internal static class SkillsCommandResultFactory
         string host,
         SkillExportFormat format,
         string reloadGuidance,
-        IReadOnlyList<string> tiers)
+        IReadOnlyList<string> tiers,
+        IReadOnlyList<string> skillNames)
     {
         ArgumentNullException.ThrowIfNull(result);
         ArgumentNullException.ThrowIfNull(packages);
         ArgumentException.ThrowIfNullOrWhiteSpace(host);
         ArgumentException.ThrowIfNullOrWhiteSpace(reloadGuidance);
         ArgumentNullException.ThrowIfNull(tiers);
+        ArgumentNullException.ThrowIfNull(skillNames);
 
         if (!result.IsSuccess)
         {
@@ -85,6 +88,7 @@ internal static class SkillsCommandResultFactory
             {
                 host,
                 tiers,
+                skillNames,
                 format = ToExportFormatLiteral(format),
                 outputRoot = result.Value!,
                 skills = CreateSkillNameList(packages),
@@ -99,12 +103,14 @@ internal static class SkillsCommandResultFactory
         SkillScopeKind scope,
         string? repositoryRoot,
         string reloadGuidance,
-        IReadOnlyList<string> tiers)
+        IReadOnlyList<string> tiers,
+        IReadOnlyList<string> skillNames)
     {
         ArgumentNullException.ThrowIfNull(result);
         ArgumentException.ThrowIfNullOrWhiteSpace(host);
         ArgumentException.ThrowIfNullOrWhiteSpace(reloadGuidance);
         ArgumentNullException.ThrowIfNull(tiers);
+        ArgumentNullException.ThrowIfNull(skillNames);
 
         if (!result.IsSuccess)
         {
@@ -126,6 +132,7 @@ internal static class SkillsCommandResultFactory
             {
                 host,
                 tiers,
+                skillNames,
                 scope = ToScopeLiteral(scope),
                 repositoryRoot,
                 installResult.TargetRoot,
@@ -147,12 +154,14 @@ internal static class SkillsCommandResultFactory
         SkillScopeKind scope,
         string? repositoryRoot,
         string reloadGuidance,
-        IReadOnlyList<string> tiers)
+        IReadOnlyList<string> tiers,
+        IReadOnlyList<string> skillNames)
     {
         ArgumentNullException.ThrowIfNull(result);
         ArgumentException.ThrowIfNullOrWhiteSpace(host);
         ArgumentException.ThrowIfNullOrWhiteSpace(reloadGuidance);
         ArgumentNullException.ThrowIfNull(tiers);
+        ArgumentNullException.ThrowIfNull(skillNames);
 
         if (!result.IsSuccess)
         {
@@ -174,6 +183,7 @@ internal static class SkillsCommandResultFactory
             {
                 host,
                 tiers,
+                skillNames,
                 scope = ToScopeLiteral(scope),
                 repositoryRoot,
                 updateResult.TargetRoot,
@@ -195,12 +205,14 @@ internal static class SkillsCommandResultFactory
         SkillScopeKind scope,
         string? repositoryRoot,
         string reloadGuidance,
-        IReadOnlyList<string> tiers)
+        IReadOnlyList<string> tiers,
+        IReadOnlyList<string> skillNames)
     {
         ArgumentNullException.ThrowIfNull(result);
         ArgumentException.ThrowIfNullOrWhiteSpace(host);
         ArgumentException.ThrowIfNullOrWhiteSpace(reloadGuidance);
         ArgumentNullException.ThrowIfNull(tiers);
+        ArgumentNullException.ThrowIfNull(skillNames);
 
         if (!result.IsSuccess)
         {
@@ -222,6 +234,7 @@ internal static class SkillsCommandResultFactory
             {
                 host,
                 tiers,
+                skillNames,
                 scope = ToScopeLiteral(scope),
                 repositoryRoot,
                 uninstallResult.TargetRoot,
@@ -241,16 +254,19 @@ internal static class SkillsCommandResultFactory
         SkillScopeKind scope,
         string? repositoryRoot,
         string reloadGuidance,
-        IReadOnlyList<string> tiers)
+        IReadOnlyList<string> tiers,
+        IReadOnlyList<string> skillNames)
     {
         ArgumentNullException.ThrowIfNull(result);
         ArgumentException.ThrowIfNullOrWhiteSpace(reloadGuidance);
         ArgumentNullException.ThrowIfNull(tiers);
+        ArgumentNullException.ThrowIfNull(skillNames);
 
         var payload = new
         {
             host = result.Host,
             tiers,
+            skillNames,
             scope = ToScopeLiteral(scope),
             repositoryRoot,
             result.TargetRoot,

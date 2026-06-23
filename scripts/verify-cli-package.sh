@@ -81,6 +81,13 @@ import sys
 
 root = json.loads(os.environ["SKILLS_LIST_JSON"])
 payload = root.get("payload") or {}
+skill_names = payload.get("skillNames")
+if skill_names != []:
+    print(
+        f"skills-pack skills list did not report an empty skillNames selection for unfiltered list. Actual: {skill_names}",
+        file=sys.stderr,
+    )
+    sys.exit(1)
 actual = [
     (tier.get("tier"), tier.get("skillCount"))
     for tier in payload.get("availableTiers", [])
@@ -93,6 +100,26 @@ expected = [
 if actual != expected:
     print(
         f"skills-pack skills list did not report expected availableTiers. Expected: {expected}. Actual: {actual}",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+PY
+
+single_skill_list="$("${tool_path}/skills-pack" skills list --skill changelog)"
+SINGLE_SKILL_LIST_JSON="${single_skill_list}" python3 - <<'PY'
+import json
+import os
+import sys
+
+root = json.loads(os.environ["SINGLE_SKILL_LIST_JSON"])
+payload = root.get("payload") or {}
+tiers = payload.get("tiers")
+skill_names = payload.get("skillNames")
+skills = payload.get("skills", [])
+actual_names = [skill.get("skillName") for skill in skills]
+if tiers != ["general", "development", "personal"] or skill_names != ["changelog"] or actual_names != ["changelog"]:
+    print(
+        f"skills-pack skills list did not support exact skill selection. Actual tiers: {tiers}. Actual skillNames: {skill_names}. Actual skills: {actual_names}",
         file=sys.stderr,
     )
     sys.exit(1)
@@ -125,6 +152,18 @@ fi
 
 if [[ ! -f "${export_path}/changelog/SKILL.md" ]]; then
   echo "skills-pack skills export did not materialize changelog/SKILL.md." >&2
+  exit 1
+fi
+
+single_skill_export_path="${tool_path}/exported-single-skill"
+"${tool_path}/skills-pack" skills export --host openai --skill changelog --output "${single_skill_export_path}" >/dev/null
+if [[ ! -f "${single_skill_export_path}/changelog/SKILL.md" ]]; then
+  echo "skills-pack skills export did not materialize changelog/SKILL.md for exact skill selection." >&2
+  exit 1
+fi
+
+if [[ -e "${single_skill_export_path}/commit" ]]; then
+  echo "skills-pack skills export materialized an unselected skill for exact skill selection." >&2
   exit 1
 fi
 

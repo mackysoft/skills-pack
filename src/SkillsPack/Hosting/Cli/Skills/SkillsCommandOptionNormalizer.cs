@@ -1,6 +1,7 @@
 using MackySoft.AgentSkills.Distribution;
 using MackySoft.AgentSkills.Hosts.Registration;
 using MackySoft.AgentSkills.Installation.Targeting;
+using MackySoft.AgentSkills.Selection;
 using MackySoft.AgentSkills.Tiers;
 using MackySoft.SkillsPack.Hosting.Cli.Common.Contracts;
 using MackySoft.SkillsPack.Hosting.Cli.Common.Text;
@@ -9,21 +10,57 @@ namespace MackySoft.SkillsPack.Hosting.Cli.Skills;
 
 internal static class SkillsCommandOptionNormalizer
 {
-    public static IReadOnlyList<SkillTier>? NormalizeTiers (
+    private static readonly IReadOnlyList<string> EmptySkillNames = Array.Empty<string>();
+
+    public static SkillPackageSelection? NormalizeRequiredPackageSelection (
         string command,
-        string[]? tiers,
+        string[]? tierLiterals,
+        string[]? skillNameLiterals,
         out CommandResult? errorResult)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(command);
 
-        errorResult = null;
-        if (tiers == null || tiers.Length == 0)
+        if ((tierLiterals == null || tierLiterals.Length == 0) && (skillNameLiterals == null || skillNameLiterals.Length == 0))
         {
-            errorResult = CommandResult.InvalidArgument(command, "Option '--tier' is required.");
+            errorResult = CommandResult.InvalidArgument(command, "Option '--tier' or '--skill' is required.");
             return null;
         }
 
-        var result = SkillTierLiteralParser.ParseSelectedTiers(SkillsPackSkillTierLiterals.Defined, tiers);
+        return NormalizeOptionalPackageSelection(command, tierLiterals, skillNameLiterals, out errorResult);
+    }
+
+    public static SkillPackageSelection? NormalizeOptionalPackageSelection (
+        string command,
+        string[]? tierLiterals,
+        string[]? skillNameLiterals,
+        out CommandResult? errorResult)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(command);
+
+        var normalizedTiers = NormalizeOptionalTiers(command, tierLiterals, out errorResult);
+        if (errorResult is not null)
+        {
+            return null;
+        }
+
+        var normalizedSkillNames = NormalizeOptionalSkillNames(command, skillNameLiterals, out errorResult);
+        if (errorResult is not null)
+        {
+            return null;
+        }
+
+        return new SkillPackageSelection(normalizedTiers!, normalizedSkillNames!);
+    }
+
+    private static IReadOnlyList<SkillTier>? NormalizeOptionalTiers (
+        string command,
+        string[]? tierLiterals,
+        out CommandResult? errorResult)
+    {
+        errorResult = null;
+        var result = tierLiterals == null || tierLiterals.Length == 0
+            ? SkillTierLiteralParser.ParseDefinedTiers(SkillsPackSkillTierLiterals.Defined)
+            : SkillTierLiteralParser.ParseSelectedTiers(SkillsPackSkillTierLiterals.Defined, tierLiterals);
         if (!result.IsSuccess)
         {
             errorResult = CommandResult.InvalidArgument(command, result.Failure!.Message);
@@ -33,17 +70,18 @@ internal static class SkillsCommandOptionNormalizer
         return result.Value!;
     }
 
-    public static IReadOnlyList<SkillTier>? NormalizeOptionalTiers (
+    private static IReadOnlyList<string>? NormalizeOptionalSkillNames (
         string command,
-        string[]? tiers,
+        string[]? skillNameLiterals,
         out CommandResult? errorResult)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(command);
-
         errorResult = null;
-        var result = tiers == null || tiers.Length == 0
-            ? SkillTierLiteralParser.ParseDefinedTiers(SkillsPackSkillTierLiterals.Defined)
-            : SkillTierLiteralParser.ParseSelectedTiers(SkillsPackSkillTierLiterals.Defined, tiers);
+        if (skillNameLiterals == null || skillNameLiterals.Length == 0)
+        {
+            return EmptySkillNames;
+        }
+
+        var result = SkillNameLiteralParser.ParseSelectedSkillNames(skillNameLiterals);
         if (!result.IsSuccess)
         {
             errorResult = CommandResult.InvalidArgument(command, result.Failure!.Message);

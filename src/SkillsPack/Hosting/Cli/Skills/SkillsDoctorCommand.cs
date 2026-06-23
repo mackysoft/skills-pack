@@ -37,6 +37,7 @@ internal sealed class SkillsDoctorCommand
         string? repoRoot = null,
         string? targetDir = null,
         string[]? tier = null,
+        string[]? skill = null,
         CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -48,6 +49,7 @@ internal sealed class SkillsDoctorCommand
             repoRoot,
             targetDir,
             tier,
+            skill,
             hostAdapters,
             out var errorResult);
         if (errorResult is not null)
@@ -64,7 +66,7 @@ internal sealed class SkillsDoctorCommand
             return targetErrorResult.ExitCode;
         }
 
-        var packagesResult = await packageProvider.GetPackagesAsync(SkillsPackSkillTierLiterals.Defined, target.Tiers, cancellationToken).ConfigureAwait(false);
+        var packagesResult = await packageProvider.GetPackagesAsync(SkillsPackSkillTierLiterals.Defined, target.Tiers, target.SkillNames, cancellationToken).ConfigureAwait(false);
         if (!packagesResult.IsSuccess)
         {
             var packageErrorResult = SkillsCommandResultFactory.CreateSkillFailure(SkillsPackCommandNames.SkillsDoctor, packagesResult.Failure!);
@@ -74,10 +76,11 @@ internal sealed class SkillsDoctorCommand
 
         var reloadGuidance = hostAdapters.GetAdapter(target.Host).Value!.Descriptor.ReloadGuidance;
         var tierLiterals = target.Tiers.Select(static item => item.Value).ToArray();
+        var skillNames = target.SkillNames;
         if (packagesResult.Value!.Count == 0)
         {
             var emptyDoctorResult = new SkillDoctorResult(target.Host, targetResult.Value!.TargetRoot, Array.Empty<SkillDoctorDiagnostic>());
-            var emptyCommandResult = SkillsCommandResultFactory.CreateDoctor(emptyDoctorResult, target.Scope, target.RepositoryRoot, reloadGuidance, tierLiterals);
+            var emptyCommandResult = SkillsCommandResultFactory.CreateDoctor(emptyDoctorResult, target.Scope, target.RepositoryRoot, reloadGuidance, tierLiterals, skillNames);
             commandResultWriter.WriteToStandardOutput(emptyCommandResult);
             return emptyCommandResult.ExitCode;
         }
@@ -88,7 +91,7 @@ internal sealed class SkillsDoctorCommand
                 targetResult.Value!.TargetRoot,
                 cancellationToken)
             .ConfigureAwait(false);
-        var commandResult = SkillsCommandResultFactory.CreateDoctor(doctorResult, target.Scope, target.RepositoryRoot, reloadGuidance, tierLiterals);
+        var commandResult = SkillsCommandResultFactory.CreateDoctor(doctorResult, target.Scope, target.RepositoryRoot, reloadGuidance, tierLiterals, skillNames);
         commandResultWriter.WriteToStandardOutput(commandResult);
         return commandResult.ExitCode;
     }

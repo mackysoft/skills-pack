@@ -9,39 +9,59 @@ public sealed class SkillsCommandOptionNormalizerTests
 {
     [Fact]
     [Trait("Size", "Small")]
-    public void NormalizeTiers_WhenTierIsMissing_ReturnsInvalidArgument ()
+    public void NormalizeRequiredPackageSelection_WhenSelectorsAreMissing_ReturnsInvalidArgument ()
     {
-        var result = SkillsCommandOptionNormalizer.NormalizeTiers("skills.install", null, out var errorResult);
+        var result = SkillsCommandOptionNormalizer.NormalizeRequiredPackageSelection("skills.install", null, null, out var errorResult);
 
         Assert.Null(result);
         Assert.NotNull(errorResult);
         Assert.Equal((int)CliExitCode.InvalidArgument, errorResult!.ExitCode);
         Assert.Contains("--tier", errorResult.Message, StringComparison.Ordinal);
+        Assert.Contains("--skill", errorResult.Message, StringComparison.Ordinal);
     }
 
     [Fact]
     [Trait("Size", "Small")]
-    public void NormalizeOptionalTiers_WhenOmitted_ReturnsAllDefinedTiers ()
+    public void NormalizeOptionalPackageSelection_WhenSelectorsAreMissing_ReturnsAllDefinedTiersWithoutSkillNames ()
     {
-        var result = SkillsCommandOptionNormalizer.NormalizeOptionalTiers("skills.list", null, out var errorResult);
+        var result = SkillsCommandOptionNormalizer.NormalizeOptionalPackageSelection("skills.list", null, null, out var errorResult);
 
         Assert.Null(errorResult);
         Assert.NotNull(result);
-        Assert.Equal(["general", "development", "personal"], result!.Select(static item => item.Value).ToArray());
+        Assert.Equal(["general", "development", "personal"], result!.Tiers.Select(static item => item.Value).ToArray());
+        Assert.Empty(result.SkillNames);
     }
 
     [Fact]
     [Trait("Size", "Small")]
-    public void NormalizeTiers_WhenTierArrayContainsMultipleItems_ReturnsDistinctSelectionInInputOrder ()
+    public void NormalizeRequiredPackageSelection_WhenTierArrayContainsMultipleItems_ReturnsDistinctSelectionInInputOrder ()
     {
-        var result = SkillsCommandOptionNormalizer.NormalizeTiers(
+        var result = SkillsCommandOptionNormalizer.NormalizeRequiredPackageSelection(
             "skills.install",
             ["development", "personal", "development"],
+            null,
             out var errorResult);
 
         Assert.Null(errorResult);
         Assert.NotNull(result);
-        Assert.Equal(["development", "personal"], result!.Select(static item => item.Value).ToArray());
+        Assert.Equal(["development", "personal"], result!.Tiers.Select(static item => item.Value).ToArray());
+        Assert.Empty(result.SkillNames);
+    }
+
+    [Fact]
+    [Trait("Size", "Small")]
+    public void NormalizeRequiredPackageSelection_WhenSkillNamesAreSelected_ReturnsDistinctSkillNamesInInputOrder ()
+    {
+        var result = SkillsCommandOptionNormalizer.NormalizeRequiredPackageSelection(
+            "skills.install",
+            null,
+            ["commit", "changelog", "commit"],
+            out var errorResult);
+
+        Assert.Null(errorResult);
+        Assert.NotNull(result);
+        Assert.Equal(["general", "development", "personal"], result!.Tiers.Select(static item => item.Value).ToArray());
+        Assert.Equal(["commit", "changelog"], result.SkillNames);
     }
 
     [Theory]
