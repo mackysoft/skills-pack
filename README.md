@@ -19,6 +19,8 @@ SkillsPack includes these reusable development workflow skills:
 | `changelog` | `development` | Write reader-facing changelogs, release notes, and PR change summaries. |
 | `code-quality-review` | `development` | Review code for duplication, low cohesion, excess state, and unnecessary abstraction. |
 | `commit` | `development` | Create responsibility-scoped Conventional Commit messages. |
+| `issue-planner` | `development` | Split tasks and specifications into single or parent-child GitHub Issue structures. |
+| `issue-writer` | `development` | Write, create, update, or review structured GitHub Issue bodies. |
 | `pr-create` | `development` | Verify, push, and create or update pull requests. |
 | `pr-merge` | `development` | Merge pull requests through CI and branch cleanup. |
 | `push` | `development` | Commit pending work when needed and push the current branch safely. |
