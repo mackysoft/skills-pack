@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "catalogId": "com.mackysoft.skills-pack",
+  "tier": "development",
+  "contentDigest": "ce3d0c2dcb35e7223381b5ed798e38b90ebea5b2fdc0c42b9949196893c55353",
+  "manifestDigest": "c2d37a267aa4590adadaff6be3010717e8d9923e508b48a4ae70b25d779a09db",
+  "skillName": "issue-writer",
+  "displayName": "Issue Writer",
+  "description": "与えられたIssue構造と本文入力に従ってGitHub Issue本文を作成、更新、点検する。Issue本文の言語、項目、完了条件、依存関係、必要な検証、参照を整理し、必要なら `gh` で起票または本文更新まで進める作業で使う。",
+  "hostArtifacts": [
+    {
+      "host": "claude",
+      "materializedFrontmatterDigest": "b3ffeb303c3d57979c34f1c9bc99993a676d2f6ac3f67b618bbe06fd72048fdb"
+    },
+    {
+      "host": "copilot",
+      "materializedFrontmatterDigest": "1efb685584a21de7526afd56af5f3ddc7607451ffc1adc0101594807516a7ae7"
+    },
+    {
+      "host": "openai",
+      "path": "agents/openai.yaml",
+      "digest": "bb0ec036f4c8946efbd9b21470a8a096ceb202d11b661c3b2aec01fe70fffbf0",
+      "materializedFrontmatterDigest": "2a4583198091cc394f27e4c883c7ff365bfbc78bb2201556c3f77a6358bbe0b5"
+    }
+  ]
+}

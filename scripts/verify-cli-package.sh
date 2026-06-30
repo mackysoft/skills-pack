@@ -94,7 +94,7 @@ actual = [
 ]
 expected = [
     ("general", 0),
-    ("development", 12),
+    ("development", 14),
     ("personal", 0),
 ]
 if actual != expected:
@@ -135,9 +135,9 @@ root = json.loads(os.environ["MULTI_TIER_LIST_JSON"])
 payload = root.get("payload") or {}
 tiers = payload.get("tiers")
 skill_count = len(payload.get("skills", []))
-if tiers != ["general", "development"] or skill_count != 12:
+if tiers != ["general", "development"] or skill_count != 14:
     print(
-        f"skills-pack skills list did not support comma-separated tier selection. Expected tiers ['general', 'development'] with 12 skills. Actual tiers: {tiers}. Actual skill count: {skill_count}",
+        f"skills-pack skills list did not support comma-separated tier selection. Expected tiers ['general', 'development'] with 14 skills. Actual tiers: {tiers}. Actual skill count: {skill_count}",
         file=sys.stderr,
     )
     sys.exit(1)
