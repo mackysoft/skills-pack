@@ -125,6 +125,49 @@ if tiers != ["general", "development", "personal"] or skill_names != ["changelog
     sys.exit(1)
 PY
 
+dependency_skill_list="$("${tool_path}/skills-pack" skills list --skill pr-merge)"
+DEPENDENCY_SKILL_LIST_JSON="${dependency_skill_list}" python3 - <<'PY'
+import json
+import os
+import sys
+
+root = json.loads(os.environ["DEPENDENCY_SKILL_LIST_JSON"])
+payload = root.get("payload") or {}
+skill_names = payload.get("skillNames")
+skills = payload.get("skills", [])
+actual_names = [skill.get("skillName") for skill in skills]
+expected_names = [
+    "branch-create",
+    "commit",
+    "pr-create",
+    "pr-merge",
+    "push",
+    "verification-gate",
+]
+dependencies_by_skill = {
+    skill.get("skillName"): skill.get("dependencies")
+    for skill in skills
+}
+if skill_names != ["pr-merge"] or actual_names != expected_names:
+    print(
+        f"skills-pack skills list did not include transitive dependencies for exact skill selection. Expected root ['pr-merge'] and skills {expected_names}. Actual root: {skill_names}. Actual skills: {actual_names}",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+if dependencies_by_skill.get("pr-merge") != ["branch-create", "pr-create", "push"]:
+    print(
+        f"skills-pack skills list did not report pr-merge dependencies. Actual: {dependencies_by_skill.get('pr-merge')}",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+if any(skill.get("skillBundleVersion") != 1 for skill in skills):
+    print(
+        f"skills-pack skills list did not report skillBundleVersion 1 for dependency selection. Actual: {[skill.get('skillBundleVersion') for skill in skills]}",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+PY
+
 multi_tier_list="$("${tool_path}/skills-pack" skills list --tier general,development)"
 MULTI_TIER_LIST_JSON="${multi_tier_list}" python3 - <<'PY'
 import json
@@ -164,6 +207,20 @@ fi
 
 if [[ -e "${single_skill_export_path}/commit" ]]; then
   echo "skills-pack skills export materialized an unselected skill for exact skill selection." >&2
+  exit 1
+fi
+
+dependency_skill_export_path="${tool_path}/exported-dependency-skill"
+"${tool_path}/skills-pack" skills export --host openai --skill pr-merge --output "${dependency_skill_export_path}" >/dev/null
+for expected_skill in branch-create commit pr-create pr-merge push verification-gate; do
+  if [[ ! -f "${dependency_skill_export_path}/${expected_skill}/SKILL.md" ]]; then
+    echo "skills-pack skills export did not materialize dependency skill ${expected_skill}/SKILL.md for exact skill selection." >&2
+    exit 1
+  fi
+done
+
+if [[ -e "${dependency_skill_export_path}/review-triage" ]]; then
+  echo "skills-pack skills export materialized an unrelated skill for dependency exact skill selection." >&2
   exit 1
 fi
 

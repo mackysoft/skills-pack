@@ -88,7 +88,9 @@ internal static class SkillsCommandOptionNormalizer
             return null;
         }
 
-        return result.Value!;
+        return result.Value!
+            .Select(static skillName => skillName.Value)
+            .ToArray();
     }
 
     public static string? NormalizeHost (
