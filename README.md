@@ -69,6 +69,8 @@ skills-pack skills list --tier development --skill changelog
 When omitted, it reports every defined tier and every bundled skill.
 `--skill` selects exact `skillName` values.
 When `--tier` and `--skill` are both specified, the selected skills must match the selected tiers.
+Exact skill selections also include transitive dependencies declared by the selected skills.
+For example, selecting `pr-merge` also exports or installs the Git and PR workflow skills it invokes.
 
 Export host-specific skill files:
 

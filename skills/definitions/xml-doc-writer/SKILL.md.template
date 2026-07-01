@@ -1,5 +1,3 @@
-# xml-doc-writer
-
 ## 目的
 - 対象APIの契約を、呼び出し側が誤解しない粒度でXMLドキュメントとして明文化する。
 - 実装と矛盾しない `summary/param/returns/exception` を作成し、利用時の前提を固定する。

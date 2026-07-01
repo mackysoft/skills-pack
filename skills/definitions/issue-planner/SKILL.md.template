@@ -1,5 +1,3 @@
-# issue-planner
-
 ## 目的
 タスクや仕様を、実装単位として扱えるGitHub Issue構造へ整理する。
 確定するIssue階層は、単一Issue、または親Issueと子Issueの1階層とする。
