@@ -19,6 +19,7 @@ SkillsPack includes these reusable development workflow skills:
 | `changelog` | `development` | Write reader-facing changelogs, release notes, and PR change summaries. |
 | `code-quality-review` | `development` | Review code for duplication, low cohesion, excess state, and unnecessary abstraction. |
 | `commit` | `development` | Create responsibility-scoped Conventional Commit messages. |
+| `csharp-authoring-rules` | `development` | Apply C# implementation and review judgment rules. |
 | `issue-planner` | `development` | Split tasks and specifications into single or parent-child GitHub Issue structures. |
 | `issue-writer` | `development` | Write, create, update, or review structured GitHub Issue bodies. |
 | `pr-create` | `development` | Verify, push, and create or update pull requests. |
@@ -27,6 +28,7 @@ SkillsPack includes these reusable development workflow skills:
 | `review-triage` | `development` | Triage review comments against code, specifications, and evidence. |
 | `test-writer` | `development` | Design and create contract-based tests. |
 | `ultra-review` | `development` | Run deeper multi-pass review and apply safe fixes. |
+| `unity-authoring-rules` | `development` | Apply Unity-specific implementation and review judgment rules with C# rules. |
 | `verification-gate` | `development` | Run the verification needed before PRs or final checks. |
 | `xml-doc-writer` | `development` | Write contract-focused XML documentation comments. |
 

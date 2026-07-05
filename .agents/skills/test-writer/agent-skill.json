@@ -1,12 +1,14 @@
 {
   "schemaVersion": 1,
+  "skillBundleVersion": 1,
   "catalogId": "com.mackysoft.skills-pack",
   "tier": "development",
-  "contentDigest": "50ad173b92d039b6eb3deec05c8d5f4134395f145cd15da77de0015c243020f2",
-  "manifestDigest": "be32f40ec806565de8ef6a28eb48f1723451326c916ddad002ee6465f6da076c",
   "skillName": "test-writer",
   "displayName": "Test Writer",
   "description": "契約と不変条件を根拠に、新規または更新の自動テストを1件ずつ設計・作成する。TDDで進め、同型テストを統合し、全テストへサイズ属性を必須付与する。実行・フォーマット・検証ゲートの実施が主目的のときは使わない。",
+  "dependencies": [],
+  "contentDigest": "50ad173b92d039b6eb3deec05c8d5f4134395f145cd15da77de0015c243020f2",
+  "manifestDigest": "308274b166bdb150a3c41e6f6ffee394d22528a312bae8ebcb6407393d54f8e1",
   "hostArtifacts": [
     {
       "host": "claude",

@@ -1,12 +1,14 @@
 {
   "schemaVersion": 1,
+  "skillBundleVersion": 1,
   "catalogId": "com.mackysoft.skills-pack",
   "tier": "development",
-  "contentDigest": "1776799aadb11404ec0ebf789e9aa47c9794862f2ef98c4f077dd571d4a2bfcb",
-  "manifestDigest": "540712e211cf5e124902b5ca584e564aefd60255bab884e3db806fc655ff745c",
   "skillName": "changelog",
   "displayName": "Changelog",
   "description": "CHANGELOG.md、リリースノート、PR Changelog、コメント用差分ログ、changeset風の人間向け変更要約を、commits、Issues、PRs、diff、既存履歴から作成、編集するときに使う。Keep a Changelogを基準に、既存形式と対象読者に合わせ、開発ログではなく読者が利用、移行、運用判断に使える変更説明へ再構成する。",
+  "dependencies": [],
+  "contentDigest": "1776799aadb11404ec0ebf789e9aa47c9794862f2ef98c4f077dd571d4a2bfcb",
+  "manifestDigest": "b9d76ff4fed59e029307f0bbdc67edb6e56dd586405e90045a3519e188ac5b41",
   "hostArtifacts": [
     {
       "host": "claude",
