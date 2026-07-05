@@ -1,12 +1,18 @@
 {
   "schemaVersion": 1,
+  "skillBundleVersion": 1,
   "catalogId": "com.mackysoft.skills-pack",
   "tier": "development",
-  "contentDigest": "f34abc85f30fe33c87e105e8fea4c6504f049b698134d21772726cbe2ec7b4c6",
-  "manifestDigest": "0f6aebe134d3ae999be8a5f669f4675229f23ba328706b14ec37edd2d840bc36",
   "skillName": "branch-create",
   "displayName": "Branch Create",
   "description": "作業ブランチを規約準拠名で作成または再利用する。Issue Number or URL がある場合は `<type>/issue-<N>-<branch_name>`、Issue が無い場合は `<type>/<branch_name>` 形式で、現在作業を載せるブランチを確定する。",
+  "dependencies": [
+    "commit",
+    "pr-create",
+    "push"
+  ],
+  "contentDigest": "f34abc85f30fe33c87e105e8fea4c6504f049b698134d21772726cbe2ec7b4c6",
+  "manifestDigest": "23d0e80863fa75077f9f76d870e8caf38357d03499aa7b9bb05c49238260b20c",
   "hostArtifacts": [
     {
       "host": "claude",
