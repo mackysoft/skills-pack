@@ -4,10 +4,54 @@
 
 **Created by Hiroya Aramaki ([Makihiro](https://twitter.com/makihiro_dev))**
 
-SkillsPack distributes reusable Agent Skills as a .NET global tool.
+SkillsPack is a .NET global tool for distributing reusable Agent Skills to supported agent hosts.
 
-Use it for skills that should be shared across repositories and development environments instead of copied by hand.
-The tool packages SKILL definitions and provides list, export, install, update, doctor, and uninstall commands for supported agent hosts.
+Use it when the same curated skill set should be shared across repositories or user environments without copying `SKILL.md` files by hand.
+The package includes canonical skill definitions, generated host-specific skill files, and commands for listing, exporting, installing, updating, diagnosing, and uninstalling skills.
+
+## Install
+
+```bash
+dotnet tool install --global MackySoft.SkillsPack
+```
+
+Update the tool to receive the latest bundled skills:
+
+```bash
+dotnet tool update --global MackySoft.SkillsPack
+```
+
+## Quick Start
+
+List available skills and supported hosts:
+
+```bash
+skills-pack skills list
+```
+
+Install the development skill tier into the current repository:
+
+```bash
+skills-pack skills install --host openai --scope project --repo-root . --tier development
+```
+
+Install the general writing skill for the current user:
+
+```bash
+skills-pack skills install --host openai --scope user --skill writing
+```
+
+Preview changes before writing files:
+
+```bash
+skills-pack skills install --host openai --scope project --repo-root . --tier development --dry-run --print-diff
+```
+
+Check installed project skills:
+
+```bash
+skills-pack skills doctor --host openai --scope project --repo-root . --tier development
+```
 
 ## Included Skills
 
@@ -33,6 +77,8 @@ SkillsPack includes these reusable skills:
 | `writing` | `general` | Write, revise, review, summarize, and localize natural-language text while preserving meaning and structure. |
 | `xml-doc-writer` | `development` | Write contract-focused XML documentation comments. |
 
+## Tiers
+
 SkillsPack defines these tiers:
 
 | Tier | Purpose |
@@ -44,19 +90,25 @@ SkillsPack defines these tiers:
 Empty tiers are valid.
 They are still reported by `skills-pack skills list` so automation can discover the full supported tier set.
 
-## Install
+## Skill Selection
+
+`--tier` selects one or more skill tiers.
+`--skill` selects exact `skillName` values.
+Selectors accept comma-separated values:
 
 ```bash
-dotnet tool install --global MackySoft.SkillsPack
+skills-pack skills install --host openai --scope project --repo-root . --tier general,development
+skills-pack skills install --host openai --scope project --repo-root . --skill changelog,commit
 ```
 
-Update the tool to receive the latest bundled skills:
+`skills list` can run without selectors.
+For `export`, `install`, `update`, `doctor`, and `uninstall`, at least one package selector is required: `--tier` or `--skill`.
 
-```bash
-dotnet tool update --global MackySoft.SkillsPack
-```
+When both `--tier` and `--skill` are specified, selected skills must match the selected tiers.
+Exact skill selections also include transitive dependencies declared by the selected skills.
+For example, selecting `pr-merge` also exports or installs the Git and PR workflow skills it invokes.
 
-## CLI Usage
+## Command Reference
 
 List bundled skills, supported hosts, tiers, and package counts:
 
@@ -67,13 +119,6 @@ skills-pack skills list --tier general,development
 skills-pack skills list --skill changelog
 skills-pack skills list --tier development --skill changelog
 ```
-
-`skills list` treats `--tier` and `--skill` as optional.
-When omitted, it reports every defined tier and every bundled skill.
-`--skill` selects exact `skillName` values.
-When `--tier` and `--skill` are both specified, the selected skills must match the selected tiers.
-Exact skill selections also include transitive dependencies declared by the selected skills.
-For example, selecting `pr-merge` also exports or installs the Git and PR workflow skills it invokes.
 
 Export host-specific skill files:
 
@@ -111,14 +156,7 @@ Install skills into the current user's host skill directory:
 
 ```bash
 skills-pack skills install --host openai --scope user --tier development
-```
-
-For `export`, `install`, `update`, `doctor`, and `uninstall`, at least one package selector is required: `--tier` or `--skill`.
-Multiple tiers or skills can be selected with comma-separated values:
-
-```bash
-skills-pack skills install --host openai --scope project --repo-root . --tier general,development
-skills-pack skills install --host openai --scope project --repo-root . --skill changelog,commit
+skills-pack skills install --host openai --scope user --skill writing
 ```
 
 Use `--dry-run` before changing installed files:
