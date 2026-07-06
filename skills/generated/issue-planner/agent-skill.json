@@ -7,10 +7,10 @@
   "displayName": "Issue Planner",
   "description": "タスクや仕様からGitHub Issue構造を決める。Issue分割、親子Issue、Pull Request単位の粒度、依存関係を整理し、単一Issue、または親Issueと子Issueの1階層にまとめ、文書前提を含むIssue本文作成に必要な入力を作る作業で使う。",
   "dependencies": [
-    "writing-context"
+    "writing"
   ],
-  "contentDigest": "3ecf81180cd05c918dd8186114205e7b8a493ba7c96f6feaf204318790d99134",
-  "manifestDigest": "bcc61271d6b6cd8cd61c6219170a69070b87b806a6bd63ed0d9211674b59f996",
+  "contentDigest": "74350a21692c48004aba9ac2afada9879170e69cf46b9dfbe4a7c0cf74bdf5cb",
+  "manifestDigest": "013270a167890135cffd3910f014a867fbfb579615623106c1d27e51ffe4fcd9",
   "hostArtifacts": [
     {
       "host": "claude",

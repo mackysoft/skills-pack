@@ -7,10 +7,10 @@
   "displayName": "Issue Writer",
   "description": "与えられたIssue構造、本文入力、文書前提に従ってGitHub Issue本文を作成、更新、点検する。Issue本文の項目、完了条件、依存関係、必要な検証、参照を整理し、必要なら `gh` で起票または本文更新まで進める作業で使う。",
   "dependencies": [
-    "writing-context"
+    "writing"
   ],
-  "contentDigest": "8279efda7294bd018f2d9eb0bf9f70e6f653926f9161953f37fe60ddb0d583e6",
-  "manifestDigest": "ccea987dbd7f55591dc52ca9224541d8c0d0587431d915a3612437cac5187533",
+  "contentDigest": "ac211da9ce6649cfeb1e8ec610715624e1703b9f88194af2677d5747e2a60c83",
+  "manifestDigest": "00c13a5584eba1884edee7e0c1741ec59ca3b1cf82b58c991f711ae461e5c554",
   "hostArtifacts": [
     {
       "host": "claude",

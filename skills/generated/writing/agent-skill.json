@@ -5,26 +5,24 @@
   "tier": "general",
   "skillName": "writing",
   "displayName": "Writing",
-  "description": "自然言語の文章、ドキュメント、レビューコメント、Issue/PR本文、技術文書を作成、推敲、要約、翻訳、ローカライズするときに、文書前提に従って意味保持、事実性、論理構造、文書構造、文体、言語ごとの表記を整える。文章品質、冗長表現、技術文書の読みやすさを改善したいときに使う。",
-  "dependencies": [
-    "writing-context"
-  ],
-  "contentDigest": "e9e30a4a5a211ebe8069984bdacb147894f8bdcf7e5bcdbb00bc6bc1739d9727",
-  "manifestDigest": "d7cdeaa2c9509e1b038012e4e9c55b9a14a9959a9ee9be51355170b2f4ff3a96",
+  "description": "会話、スレッド、返信、コメント、メール、案内、告知、提案、報告、説明文、記事、原稿、専門文書など、自然言語で書かれた文章を扱うときに、対象、読者、媒体、言語、出力形式を文章前提として固定し、意味保持、事実性、論理構造、文章構造、文体、言語ごとの表記を整える。文章の作成、変更、レビュー、要約、翻訳、ローカライズ、冗長表現の整理、やりとりや説明の読みやすさを改善したいときに使う。",
+  "dependencies": [],
+  "contentDigest": "76da637ee2cecd2636509c382af15ac15510fe8e1d969557e92f073e3fb9cf51",
+  "manifestDigest": "c147b11d8af9ab0dd51632a51452be79888c96eac4f5fc27fcdef127502e86fa",
   "hostArtifacts": [
     {
       "host": "claude",
-      "materializedFrontmatterDigest": "d970a58a97021203677f9cec128803ef037843dd0332e93dc05124c9d9510194"
+      "materializedFrontmatterDigest": "fe48e50302394b26cfada101c91081ec9edfa14115cbeb20137bca8abf07e4f5"
     },
     {
       "host": "copilot",
-      "materializedFrontmatterDigest": "0acdf48aca7d1cb54f3ed1cdfa52769d5eb0139addcc373f3b8caab958dd20a5"
+      "materializedFrontmatterDigest": "4cc7d7c70cb1a3bdcd2acffbe0e48184d5b1e74b0e25391b11ec09e28a8e24d6"
     },
     {
       "host": "openai",
       "path": "agents/openai.yaml",
-      "digest": "9f8977fb6a33f83bce41a1a7a990e607a5e033f7647449a40d01791a140aaad7",
-      "materializedFrontmatterDigest": "02ac11c7e78c00880e859c1e76944ccbeaba8ed0e8a8e5b9c759e3ec865f2c44"
+      "digest": "04dab5e8fd98aee6ceddf31daeaaffa9c8e6b41ef68812546ad7f8a1a1d16d34",
+      "materializedFrontmatterDigest": "0bd2b260defa297faabdf0f29323118a2f8c51deca416c3348b50a966605456a"
     }
   ]
 }
