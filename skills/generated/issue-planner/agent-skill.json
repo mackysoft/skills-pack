@@ -5,24 +5,26 @@
   "tier": "development",
   "skillName": "issue-planner",
   "displayName": "Issue Planner",
-  "description": "タスクや仕様からGitHub Issue構造を決める。Issue分割、親子Issue、Pull Request単位の粒度、依存関係を整理し、単一Issue、または親Issueと子Issueの1階層にまとめ、Issue本文作成に必要な入力を作る作業で使う。",
-  "dependencies": [],
-  "contentDigest": "8413a35117a00a96a9f05f27a38b4ffa2feeea866bd728213ebf8c71e02c30e5",
-  "manifestDigest": "e2b4b2dc56765b05cb540edbe35e1d684923b85d7a353c5cce2670039a0c0e8b",
+  "description": "タスクや仕様からGitHub Issue構造を決める。Issue分割、親子Issue、Pull Request単位の粒度、依存関係を整理し、単一Issue、または親Issueと子Issueの1階層にまとめ、文書前提を含むIssue本文作成に必要な入力を作る作業で使う。",
+  "dependencies": [
+    "writing-context"
+  ],
+  "contentDigest": "3ecf81180cd05c918dd8186114205e7b8a493ba7c96f6feaf204318790d99134",
+  "manifestDigest": "bcc61271d6b6cd8cd61c6219170a69070b87b806a6bd63ed0d9211674b59f996",
   "hostArtifacts": [
     {
       "host": "claude",
-      "materializedFrontmatterDigest": "30a643f0379101d5238dbc4c76ea5edb178e6f9f7109917551c38497e1ce3155"
+      "materializedFrontmatterDigest": "722152100705fbd5f8c8a0ac9d2f729142c759c736817ecc9cc9207923e6be1d"
     },
     {
       "host": "copilot",
-      "materializedFrontmatterDigest": "03deeebc7e03be6e893cd1997a65df7b0a960e68c72f9c14bd7a6b7835816352"
+      "materializedFrontmatterDigest": "b374c1fc8b124a477cf4cc42ac86670294b10d88b2257fe3e657d87a434d97c4"
     },
     {
       "host": "openai",
       "path": "agents/openai.yaml",
-      "digest": "215a57871591a3cfa65f3b90c68fe4c5c541e2bc7f55690a3c9f69e704515c59",
-      "materializedFrontmatterDigest": "ae09e1772f0d8007a1ee9c81ec53d2a1d81f97c5b46806efacc8d6469b3426c0"
+      "digest": "f58305c1a738b8666a4ee369824dac22645296297782d025dae424d1e264469b",
+      "materializedFrontmatterDigest": "5e992b7557e972c71f3ec9a3f8e34eb5f639d2fe299dd40b2dabec03380191d3"
     }
   ]
 }
