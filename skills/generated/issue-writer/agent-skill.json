@@ -5,26 +5,26 @@
   "tier": "development",
   "skillName": "issue-writer",
   "displayName": "Issue Writer",
-  "description": "与えられたIssue構造、本文入力、文書前提に従ってGitHub Issue本文を作成、更新、点検する。Issue本文の項目、完了条件、依存関係、必要な検証、参照を整理し、対象、読者、言語、出力形式を固定する必要がある場合は writing-context の判断を使い、必要なら `gh` で起票または本文更新まで進める作業で使う。",
+  "description": "与えられたIssue構造、本文入力、文書前提に従ってGitHub Issue本文を作成、更新、点検する。Issue本文の項目、完了条件、依存関係、必要な検証、参照を整理し、必要なら `gh` で起票または本文更新まで進める作業で使う。",
   "dependencies": [
     "writing-context"
   ],
-  "contentDigest": "67f7ad8cd25e4cb6932229512aecff8d05852c13aa7957125d0fddc41a9ae526",
-  "manifestDigest": "9a8695ea57b58a6ee1cfac536a5d2bef3bd62efbfb139bcdd67a804a50771d93",
+  "contentDigest": "8279efda7294bd018f2d9eb0bf9f70e6f653926f9161953f37fe60ddb0d583e6",
+  "manifestDigest": "ccea987dbd7f55591dc52ca9224541d8c0d0587431d915a3612437cac5187533",
   "hostArtifacts": [
     {
       "host": "claude",
-      "materializedFrontmatterDigest": "3c3f0305a66215ab38b59e02f9377ebed131ea5f10bd3322f62cde1c1911650f"
+      "materializedFrontmatterDigest": "4ba25f19bffc141e8b5c9af385d86afb32f1eeb4886e262c403bee66819fdc46"
     },
     {
       "host": "copilot",
-      "materializedFrontmatterDigest": "d719e2cb3279c65b8c4e8e011aa841b2318a0f5d64df94e837ea2e4cad7e1064"
+      "materializedFrontmatterDigest": "08fd3445edbb8fbfc205acb0145b178486e783c0630cb6dac2b312c0a93fd35e"
     },
     {
       "host": "openai",
       "path": "agents/openai.yaml",
-      "digest": "191ebd0ebb7355ae62e70e103292e0d5112eb63950a177465b5579a521d58d3e",
-      "materializedFrontmatterDigest": "4d7ea75ba8fd82662ebd89423d078ac23d6f1770dc3ec9f251fa94119ae1ed25"
+      "digest": "4054f4c47a63ecaf109657fa1334edc8f6233ae01e34e47afece7236c3bbb7e2",
+      "materializedFrontmatterDigest": "2cd1b5d3d257751f6affb9cb54271a8f6ef4040f326418e6f9c8c30a13a985e2"
     }
   ]
 }

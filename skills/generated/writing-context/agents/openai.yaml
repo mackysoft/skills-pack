@@ -1,6 +1,6 @@
 interface:
   display_name: "Writing Context"
-  short_description: "文章、Issue、PR、README、仕様、設計文書、レビューコメント、返信などを書く前に、対象、読者、媒体、言語、出力形式を固定する。既存文書、テンプレート、リポジトリの作業言語、公開対象、ユーザー指定から、後続の writing、issue-writer、changelog などへ渡す文書前提を決めるときに使う。"
+  short_description: "文章、Issue、PR、README、仕様、設計文書、レビューコメント、返信などを書く前に、対象、読者、媒体、言語、出力形式を文書前提として固定する。既存文書、テンプレート、リポジトリの作業言語、公開対象、ユーザー指定から、文章出力の前提を決めるときに使う。"
   default_prompt: "Use $writing-context to follow the Writing Context workflow."
 
 policy:
