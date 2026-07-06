@@ -1,6 +1,7 @@
 ## 目的
 自然言語の文章を、文章前提に従って作成、変更、レビューする。
 意味保持と事実性を守り、論理構造、文章構造、媒体に合う文体、言語ごとの表記を整える。
+高品質な文章とは、読者が誤らずに理解、判断、行動できる文章である。
 
 ## 文章前提
 文章を作る前に、必要な範囲で文章前提を固定する。
@@ -26,13 +27,13 @@
 | 必要な判断 | 参照 |
 | --- | --- |
 | 事実性、意味保持、主張、根拠、不確実性 | [references/lens-argument-integrity.md](references/lens-argument-integrity.md) |
-| 見出し、段落、順序、やりとりの流れ、例、表、箇条書き | [references/lens-document-structure.md](references/lens-document-structure.md) |
+| 見出し、段落、順序、例、表、箇条書き | [references/lens-document-structure.md](references/lens-document-structure.md) |
 | 冗長表現、反復、文体、過剰な一般論 | [references/lens-style-concision.md](references/lens-style-concision.md) |
-| スレッド、チャット、メール、返信、コメント、レビュー結果、問い合わせ | [references/medium-interaction.md](references/medium-interaction.md) |
+| スレッド、チャット、メール、返信、コメント、レビュー結果、問い合わせ、やりとりの流れ | [references/medium-interaction.md](references/medium-interaction.md) |
 | 専門文書、仕様、手順、マニュアル、リファレンス | [references/medium-technical-document.md](references/medium-technical-document.md) |
 | 翻訳、ローカライズ、言語間の意味保持 | [references/task-translation-localization.md](references/task-translation-localization.md) |
 | 日本語の語彙、表記、文末、強調、外来語 | [references/language-japanese.md](references/language-japanese.md) |
-| 日本語の専門的な長文、専門記事、書籍調の文章 | [references/profile-japanese-technical-manuscript.md](references/profile-japanese-technical-manuscript.md) |
+| 日本語の専門的な長文、専門記事、書籍調の文章 | [references/profile-japanese-technical-manuscript.md](references/profile-japanese-technical-manuscript.md)、[references/lens-argument-integrity.md](references/lens-argument-integrity.md)、[references/lens-document-structure.md](references/lens-document-structure.md)、[references/lens-style-concision.md](references/lens-style-concision.md)、[references/medium-technical-document.md](references/medium-technical-document.md)、[references/language-japanese.md](references/language-japanese.md) |
 
 ## 優先順位
 1. 確認済みの事実、意味保持、責任主体、条件、不確実性を守る。
@@ -54,6 +55,8 @@
 - 意味保持が必要な作業では、事実、主張、条件、責任主体、時制、確度を変えない。
 - 冗長を削る場合も、読者に必要な定義、条件、根拠、制約は残す。
 - 文体を整えるためだけに、判断に必要な曖昧さや未確定事項を消さない。
+- 成果物には、読者がこの文章から得るべき結論、対象、条件、理由、制約、次の行動に関係する文脈だけを残す。作成過程、会話の経緯、検討中に退けた案、作成者側の都合、自己言及は、そのまま作業ログとして残さず、必要な判断材料として整理する。
+- 範囲や条件を区切る記述は、読者が対象、理由、制約、次の行動を判断するために必要な場合だけ残す。採らなかった案、作成者側の都合、弁明、防衛線を、できないことの列挙として並べない。
 - 既存の文章を更新する場合は、既存の見出し階層、用語、表記、粒度に合わせる。
 - 出力に、参照選択や推敲過程の説明を混ぜない。
 - 参照へ分けた規則を、要約して弱めない。
@@ -68,6 +71,7 @@
 - 文章へ変更を加えたあと、編集箇所だけでなく、前後の段落、属する節、文章全体の流れを確認したか。
 - 媒体と言語に合う粒度、表記、文体になっているか。
 - 日本語で十分に説明できる一般概念を、英語句のまま残していないか。
+- 範囲、条件、制約、未確定事項の記述が、読者が対象、理由、制約、次の行動を判断するために必要な情報になっているか。採らなかった案、会話の経緯、弁明、防衛線、自分都合の説明が混ざっていないか。
 - 論点を増やさない空句、作業姿勢だけの宣言、根拠のない強調が残っていないか。
 
 ## 出力
