@@ -31,7 +31,6 @@ SkillsPack includes these reusable skills:
 | `unity-authoring-rules` | `development` | Apply Unity-specific implementation and review judgment rules with C# rules. |
 | `verification-gate` | `development` | Run the verification needed before PRs or final checks. |
 | `writing` | `general` | Write, revise, review, summarize, and localize natural-language text while preserving meaning and structure. |
-| `writing-context` | `general` | Decide writing target, reader, medium, language, and output format before drafting. |
 | `xml-doc-writer` | `development` | Write contract-focused XML documentation comments. |
 
 SkillsPack defines these tiers:
