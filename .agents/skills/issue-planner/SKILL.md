@@ -1,6 +1,6 @@
 ---
 name: "issue-planner"
-description: "タスクや仕様からGitHub Issue構造を決める。Issue分割、親子Issue、Pull Request単位の粒度、依存関係を整理し、単一Issue、または親Issueと子Issueの1階層にまとめ、Issue本文作成に必要な入力を作る作業で使う。"
+description: "タスクや仕様からGitHub Issue構造を決める。Issue分割、親子Issue、Pull Request単位の粒度、依存関係を整理し、単一Issue、または親Issueと子Issueの1階層にまとめ、文書前提を含むIssue本文作成に必要な入力を作る作業で使う。"
 ---
 
 # issue-planner
@@ -59,8 +59,8 @@ Issue本文作成に使う入力をIssueごとに揃える。
 入力は次を含める。
 
 - Issue構造
+- 文書前提（対象、読者、媒体、言語、出力形式）
 - 本文形式
-- 本文言語
 - Issue種別（`single`、`parent`、`child`）
 - タイトル案
 - 目的
@@ -68,6 +68,9 @@ Issue本文作成に使う入力をIssueごとに揃える。
 - 依存関係
 - 参照元
 - 親子関係
+
+文書前提が未固定の場合は、`$writing` の文書前提に従って固定する。
+媒体は GitHub Issue として扱う。
 
 ### 6. 構造を確認する
 Issue階層が1階層以内であることを確認する。
