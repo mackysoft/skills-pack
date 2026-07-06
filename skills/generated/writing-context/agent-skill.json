@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "skillBundleVersion": 1,
+  "catalogId": "com.mackysoft.skills-pack",
+  "tier": "general",
+  "skillName": "writing-context",
+  "displayName": "Writing Context",
+  "description": "文章、Issue、PR、README、仕様、設計文書、レビューコメント、返信などを書く前に、対象、読者、媒体、言語、出力形式を固定する。既存文書、テンプレート、リポジトリの作業言語、公開対象、ユーザー指定から、後続の writing、issue-writer、changelog などへ渡す文書前提を決めるときに使う。",
+  "dependencies": [],
+  "contentDigest": "4f87252c50b04b38f45336ca9862d8ecb6bb1a62196ba87a0d425d0736ee73b0",
+  "manifestDigest": "9f4919f89b4bc28a40efea2a2871fa35ba808424abc32ba6faf66737e388e95a",
+  "hostArtifacts": [
+    {
+      "host": "claude",
+      "materializedFrontmatterDigest": "dfde8ed0f3287a3b4a2562a1efbd6661e409d10d9515d2767431b1a987416973"
+    },
+    {
+      "host": "copilot",
+      "materializedFrontmatterDigest": "e073b291094853758ae7edb6a73faa646c8e1c7724550cc41911adf86153c3c7"
+    },
+    {
+      "host": "openai",
+      "path": "agents/openai.yaml",
+      "digest": "bd472e534221402883a1485860f352112fbe00ff0ed0a4f5ff37b9e7196040fb",
+      "materializedFrontmatterDigest": "3bad94faeef3a967e5dd94b7430bbec4c532a37878ec4f34a6d6bb69f7eb6748"
+    }
+  ]
+}

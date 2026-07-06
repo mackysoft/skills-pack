@@ -5,24 +5,26 @@
   "tier": "general",
   "skillName": "writing",
   "displayName": "Writing",
-  "description": "自然言語の文章、ドキュメント、レビューコメント、Issue/PR本文、技術文書を作成、推敲、要約、翻訳、ローカライズするときに、意味保持、事実性、論理構造、媒体、言語ごとの表記を判断して整える。日本語または英語の文章品質、冗長表現、文書構造、技術文書の読みやすさを改善したいときに使う。",
-  "dependencies": [],
-  "contentDigest": "895dc68143c9e7b14651eee0486fbdbc1d1b65cb4286f63e663dbc197e60fa0d",
-  "manifestDigest": "463c430f6e3ea1f84b7bfefbaf7c221e56be2fc23294693225b38dc518a9fbcc",
+  "description": "自然言語の文章、ドキュメント、レビューコメント、Issue/PR本文、技術文書を作成、推敲、要約、翻訳、ローカライズするときに、固定された対象、読者、媒体、言語、出力形式に従って、意味保持、事実性、論理構造、媒体、言語ごとの表記を判断して整える。日本語または英語の文章品質、冗長表現、文書構造、技術文書の読みやすさを改善したいときに使う。",
+  "dependencies": [
+    "writing-context"
+  ],
+  "contentDigest": "41ceb3a6fdb16f53993ceb628949bfd8c198845c3680344185f2521b0986bb1e",
+  "manifestDigest": "75c83e5fcd4f51670593949e387a35e850ef860eddebbc5fc733893bf23593f4",
   "hostArtifacts": [
     {
       "host": "claude",
-      "materializedFrontmatterDigest": "5c39d81232caea30f3491054ff698a92150b5afd9d26ac8f3e420df48f2188d3"
+      "materializedFrontmatterDigest": "48d5a9fc0f7264e9cd6626d6c319ca7cad13a9b58ffa9750642528babea7fca1"
     },
     {
       "host": "copilot",
-      "materializedFrontmatterDigest": "56df7df3bebd8a441d27053fe227a0396be95c21eb4dbbfe19e87033965fbb98"
+      "materializedFrontmatterDigest": "ce06f9abe4598c3ea4dcac02fad4e350cedd19ea7e432f7626d4d97b3732d92e"
     },
     {
       "host": "openai",
       "path": "agents/openai.yaml",
-      "digest": "555c93529bbd73afbafb8c2bfc59c24ddaa53655d6540dfdd38beff9136257e3",
-      "materializedFrontmatterDigest": "0a4b01079b67d36820d241f485c30c82ab90e775fa153d805c130c373b6345b5"
+      "digest": "a411a8a01def92aaf92382864d0a947d8c42a1bd75504c630bb5bfcce141e738",
+      "materializedFrontmatterDigest": "35b5fa34e0a8f3b59947ebf36c8d5577c4aa27cb5e8a17a129fe3bfab5a1c98b"
     }
   ]
 }
