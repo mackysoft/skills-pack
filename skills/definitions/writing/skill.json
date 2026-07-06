@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "skillBundleVersion": 1,
+  "catalogId": "com.mackysoft.skills-pack",
+  "tier": "general",
+  "skillName": "writing",
+  "displayName": "Writing",
+  "description": "自然言語の文章、ドキュメント、レビューコメント、Issue/PR本文、技術文書を作成、推敲、要約、翻訳、ローカライズするときに、意味保持、事実性、論理構造、媒体、言語ごとの表記を判断して整える。日本語または英語の文章品質、冗長表現、文書構造、技術文書の読みやすさを改善したいときに使う。",
+  "dependencies": [],
+  "references": [
+    "lens-argument-integrity.md",
+    "lens-document-structure.md",
+    "lens-style-concision.md",
+    "medium-interaction.md",
+    "medium-technical-document.md",
+    "language-japanese.md",
+    "profile-japanese-technical-manuscript.md"
+  ]
+}

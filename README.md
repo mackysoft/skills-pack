@@ -11,7 +11,7 @@ The tool packages SKILL definitions and provides list, export, install, update, 
 
 ## Included Skills
 
-SkillsPack includes these reusable development workflow skills:
+SkillsPack includes these reusable skills:
 
 | Skill | Tier | Purpose |
 | --- | --- | --- |
@@ -30,13 +30,14 @@ SkillsPack includes these reusable development workflow skills:
 | `ultra-review` | `development` | Run deeper multi-pass review and apply safe fixes. |
 | `unity-authoring-rules` | `development` | Apply Unity-specific implementation and review judgment rules with C# rules. |
 | `verification-gate` | `development` | Run the verification needed before PRs or final checks. |
+| `writing` | `general` | Write, revise, review, summarize, and localize natural-language text while preserving meaning and structure. |
 | `xml-doc-writer` | `development` | Write contract-focused XML documentation comments. |
 
 SkillsPack defines these tiers:
 
 | Tier | Purpose |
 | --- | --- |
-| `general` | General-purpose reusable workflow skills. |
+| `general` | General-purpose reusable skills. |
 | `development` | Code, review, test, Git, and pull request workflow skills. |
 | `personal` | Skills for my personal environment and workflow setup. |
 
