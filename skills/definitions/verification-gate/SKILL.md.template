@@ -30,16 +30,13 @@
 | ビルド | compile、typecheck、bundle、asset import、package build |
 | 振る舞い | unit、integration、E2E、snapshot、golden test |
 | 契約 | API、CLI、設定、ファイル形式、出力形式、互換性 |
-| 解析 | static analysis、architecture check、security scan、quality metric |
+| 解析 | static analysis、architecture check、security scan、coverage、quality metric |
 | 表示 | 画面、文書、画像、レイアウト、表示崩れ |
 | リリース | package validation、installer、publish dry run、migration check |
 
 ユーザーが検証を明示した場合は、その検証面を含める。
 受け入れ条件や既存規約に必要な検証が書かれている場合は含める。
 検証結果が今回の受け入れ判定に影響しない場合は実行しない。
-
-coverage は解析の一種として扱う。
-ロジック品質、分岐、回帰リスクの判定に必要な場合だけ使う。
 
 ### Phase 3: 実行コマンドを決める
 実行コマンドは次の順に決める。

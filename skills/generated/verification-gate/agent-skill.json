@@ -7,8 +7,8 @@
   "displayName": "Verification Gate",
   "description": "変更が受け入れ可能かを判断するために、作業種別から必要な検証面を選び、リポジトリの専用 script や CI と同じコマンドを優先して実行し、成功、失敗、未検証範囲、次に必要な作業を残す。",
   "dependencies": [],
-  "contentDigest": "6eb2430daa8d95773c5b8fed7be1eb74794d959c2f6d60ef16e8184e3c48a714",
-  "manifestDigest": "60456054ae66d2c47e8934fd0a42bea45a89d0c60b7aa91394b7af28a7efe749",
+  "contentDigest": "abd49ed70a32534a43eeb72b7790033564630f46122ee3b1081705b4d43c70c8",
+  "manifestDigest": "cf009907af66690b26f923d70fb93ab8f404c0ac7df937fd41faa3d37e0d125e",
   "hostArtifacts": [
     {
       "host": "claude",
