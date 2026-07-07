@@ -1,14 +1,14 @@
 # sync-latest
 
 ## 目的
-現在ブランチへ取り込むべき最新の基準を決め、安全に同期する。
+最新化の依頼を受けたら状態を確認し、必要な場合だけ現在ブランチへ適切な基準を取り込む。
 
 ## フロー
 
 ### Phase 1: 作業状態を確認する
 - detached HEAD では停止する。
 - `origin` が存在することを確認する。
-- 現在ブランチ、upstream、open PR、未コミット差分を確認する。
+- 現在ブランチ、upstream、open PR、既定ブランチ、指定ブランチ、未コミット差分を確認する。
 - 同期で上書きされうる未コミット差分がある場合は停止し、先に `$commit` で保護する。
 
 ### Phase 2: 最新状態を取得する
@@ -16,21 +16,23 @@
 判断に必要な場合だけ tag も取得する。
 前提確認なしに `git pull` を使わない。
 
-### Phase 3: 同期基準を決める
+### Phase 3: 最新化の要否と基準を決める
 
-| 状態 | 同期基準 |
+| 状態 | 扱い |
 | --- | --- |
-| ユーザーがブランチを指定している | 指定ブランチ |
-| push 前で upstream が behind している | upstream branch |
-| 現在ブランチに open PR がある | PR の base branch |
-| 現在ブランチが既定ブランチである | `origin/<default>` |
-| 作業ブランチで PR がない | `origin/<default>` |
+| ブランチが指定されている | 指定ブランチを同期基準にする。 |
+| upstream があり、現在ブランチが behind している | upstream branch を同期基準にする。 |
+| open PR があり、現在ブランチが PR base に対して behind している | PR の base branch を同期基準にする。 |
+| 現在ブランチが既定ブランチであり、`origin/<default>` に対して behind している | `origin/<default>` を同期基準にする。 |
+| 作業ブランチに open PR がなく、`origin/<default>` に未取り込みの commit がある | `origin/<default>` を同期基準にする。 |
+| 取り込むべき基準がない | 同期不要として進む。 |
 
 複数該当する場合は、upstream を先に同期し、その後に PR base または既定ブランチを同期する。
 
 ### Phase 4: 同期する
 - 現在ブランチが同期基準そのものなら fast-forward のみ行う。
 - 作業ブランチでは同期基準を現在ブランチへ merge する。
+- 同期不要の場合は merge しない。
 - 既に共有済みのブランチでは履歴を書き換えない。
 - `--force` と `--force-with-lease` は使わない。
 - 衝突した場合は push、PR 作成、PR マージへ進まない。

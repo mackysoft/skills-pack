@@ -10,8 +10,8 @@
     "commit",
     "sync-latest"
   ],
-  "contentDigest": "4eb270d00d46f92a3c31d88ba113e53c58ab2c728c6c2dfbbc103f4c98d56316",
-  "manifestDigest": "fd1d99b5fef273470c8df7ac991eabe5689ab1a9b9cafb070ddf499eb8f754ea",
+  "contentDigest": "4a717c41e38af52142c9647290892ceefe9d72a861b8cf5f32211633634c7e6d",
+  "manifestDigest": "99c1812e5e15b982825380cf1ddda81a2ae4ad1c33aeeb3fc0dbd2b1d2d538ff",
   "hostArtifacts": [
     {
       "host": "claude",

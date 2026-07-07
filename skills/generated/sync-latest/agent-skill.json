@@ -5,26 +5,26 @@
   "tier": "development",
   "skillName": "sync-latest",
   "displayName": "Sync Latest",
-  "description": "作業開始前、push 前、PR 作成前、PR 更新前、PR マージ前に、origin から最新状態を取得し、現在ブランチへ取り込むべき基準ブランチを決めて安全に同期する。「最新マスタを取り込む」「最新 main を取り込む」「pull して」「PR の base を取り込む」「behind を解消する」「push 前に最新化する」「non-fast-forward を解消する」といった依頼で使う。",
+  "description": "最新化の依頼を受けたときに、origin から最新状態を取得し、現在ブランチ、upstream、open PR、既定ブランチ、指定ブランチを確認して、必要な場合だけ安全に同期する。「最新マスタを取り込む」「最新 main を取り込む」「pull して」「PR の base を取り込む」「behind を解消する」「push 前に最新化する」「non-fast-forward を解消する」といった依頼で使う。",
   "dependencies": [
     "commit"
   ],
-  "contentDigest": "7cea7f8067162569440b891cc7d4b781a599989e7ed2d0153fd0f3f72c602fd0",
-  "manifestDigest": "31b693fa12af6c7f3f9cf1df8d94f664ff29576615e46006a5931bd660a0d0f6",
+  "contentDigest": "afaaa844d76d9a6da0f4c64ba9d14c0bf4e10a49874b06f639ce1723bc8b47c7",
+  "manifestDigest": "356de81277fbe06cd93c19ff704314362bd93c5bc090aa4c99926d4d313926be",
   "hostArtifacts": [
     {
       "host": "claude",
-      "materializedFrontmatterDigest": "677e0beb3393693c4bde1178ddc52f8c791968205d355a800a5bf778086c2f36"
+      "materializedFrontmatterDigest": "abe13daea370b3a3ac9926283719684493f2809e0e4d99086dc27bc64a0d3e4b"
     },
     {
       "host": "copilot",
-      "materializedFrontmatterDigest": "d0ef8805aca548db1bddc8c333883ba6a3eb87d46f31c465e870f372fb0975ed"
+      "materializedFrontmatterDigest": "0795643697a7bdce3fc3ec927089d96b9c793480228288e1e7b3f3e6855310e2"
     },
     {
       "host": "openai",
       "path": "agents/openai.yaml",
-      "digest": "a81b7617e0aa1970ed2801f7d989d876bbaed84c8600edb7c2fa8b5af932735b",
-      "materializedFrontmatterDigest": "76b5c621265f0245ee69db682a2358f12b8b485081a3c29644cf9fcc15039975"
+      "digest": "e16b796b3d0e905a0e258b34caa0c53424daf8abd57206712a4be82fc71201a5",
+      "materializedFrontmatterDigest": "a33b278641b04da0df7b276cd81220bb33e0b1e44265f7cffdaf516c5972349e"
     }
   ]
 }
