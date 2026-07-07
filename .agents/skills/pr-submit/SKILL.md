@@ -1,3 +1,10 @@
+---
+name: "pr-submit"
+description: "現在作業を PR として作成または既存 open PR へ更新するときに、`$commit`、`$sync-latest`、検証、`$push`、本文作成、PR 作成または更新までを一気通貫で実行する。Issue がある場合は Issue を優先して本文と base を決定し、PR タイトルと本文の言語は `$writing` で揃える。"
+---
+
+# pr-submit
+
 ## 目的
 現在作業を PR として作成または既存 open PR へ更新する。
 

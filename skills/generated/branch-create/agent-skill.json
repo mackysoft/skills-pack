@@ -9,8 +9,8 @@
   "dependencies": [
     "sync-latest"
   ],
-  "contentDigest": "d9143fb679269a76232db5b6800697bea78e519dbbb785e9fe9a201c8a883afd",
-  "manifestDigest": "7d0316f67c208398833d613ee145d950345467d361f0305bf20513ae44bae800",
+  "contentDigest": "0ddccc3760b9b6a2624df404a1f9aec673d15f926d9ce032c435d3c037d6e72e",
+  "manifestDigest": "a0e3e602913fb1ed48de2ea5f1072f03053f5aca2d71929a721fb9c66a6f758a",
   "hostArtifacts": [
     {
       "host": "claude",

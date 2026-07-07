@@ -30,9 +30,11 @@ type は次から選ぶ。
 | その他 | `chore` |
 
 ### Phase 3: メッセージを作る
-件名は `type(scope): summary` 形式にする。
+件名は `type(scope): <subject>` 形式にする。
 scope は主要なモジュール名、または横断変更の対象領域にする。
 件名と本文は `$writing` で文章前提を固定してから書く。
+`type` と `scope` は Conventional Commits の規約語彙として小文字にする。
+`<subject>` は件名の言語、固有名詞、識別子、既存履歴の表記に合わせ、prefix 後の先頭も自然な表記を保つ。
 既存コミット履歴がある場合は粒度を合わせる。
 
 本文には `Why`、`What Changed`、`Impact` を入れる。
