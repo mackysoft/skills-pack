@@ -5,7 +5,7 @@
   "tier": "development",
   "skillName": "sync-latest",
   "displayName": "Sync Latest",
-  "description": "最新化の依頼を受けたときに、origin から最新状態を取得し、現在ブランチ、upstream、open PR、既定ブランチ、指定ブランチを確認して、必要な場合だけ安全に同期する。「最新マスタを取り込む」「最新 main を取り込む」「pull して」「PR の base を取り込む」「behind を解消する」「push 前に最新化する」「non-fast-forward を解消する」といった依頼で使う。",
+  "description": "作業開始前、push 前、PR 作成前、PR 更新前、PR マージ前、non-fast-forward 解消など、現在ブランチの最新性が作業の前提になる場面で、origin から最新状態を取得し、現在ブランチ、upstream、open PR、既定ブランチ、指定ブランチを確認して、必要な場合だけ安全に同期する。",
   "dependencies": [
     "commit"
   ],
