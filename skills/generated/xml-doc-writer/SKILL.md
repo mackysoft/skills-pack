@@ -25,21 +25,21 @@
 - コメントテンプレート: [references/comment-templates.md](references/comment-templates.md)
 - 自己レビュー項目: [references/self-review-checklist.md](references/self-review-checklist.md)
 
-## 手順
-### 1. 対象メンバを選定する
+## フロー
+### Phase 1: 対象メンバを選定する
 - まず公開API（`public` / `protected`）を対象にする。
 - 非公開メンバは、境界処理、変換、永続化、非同期、例外契約など誤用リスクが高いものだけ対象にする。
 - 生成コードは対象外とする。
 
-### 2. 契約情報を抽出する
+### Phase 2: 契約情報を抽出する
 - 署名と実装から、入力制約、戻り値保証、副作用、例外条件、完了条件を整理する。
 - 曖昧な点は推測で埋めず、未確定として扱う。
 
-### 3. XMLドキュメントを記述する
+### Phase 3: XMLドキュメントを記述する
 - タグ本文は `$writing` で文章前提を固定し、言語は英語、媒体は XML documentation comment として扱う。
 - `authoring-rules.md` のルールに従って、全ての対象に対して必要なXMLドキュメントを記述する。
 
-### 4. 最終整合性チェックを行う
+### Phase 4: 最終整合性を確認する
 - 対象メンバのXMLドキュメントの内容が、`authoring-rules.md`のルールに従っているかを確認する。
 - ドキュメントが実装と矛盾していないか確認する。
 
