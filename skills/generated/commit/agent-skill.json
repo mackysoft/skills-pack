@@ -6,9 +6,11 @@
   "skillName": "commit",
   "displayName": "Commit",
   "description": "変更を責務単位で分割し、Conventional Commits形式の包括的なメッセージでコミットを作成する。",
-  "dependencies": [],
-  "contentDigest": "c3045b211f91ddee0c1117f5a0b413699675d339ac2027b8213d4c875f672f58",
-  "manifestDigest": "339fae579bdac42cdae50f87c8477dcf7258ef1fb4e68cbedd934f005590b2c6",
+  "dependencies": [
+    "writing"
+  ],
+  "contentDigest": "3afcec904b75e372fe6819c446205ab3756b509c049b4113043efb1d6e30e38d",
+  "manifestDigest": "10724ef725f0cbf239303e5ce110bda3c20829bf4ba4b5206a76f73848192dce",
   "hostArtifacts": [
     {
       "host": "claude",
