@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "skillBundleVersion": 1,
+  "catalogId": "com.mackysoft.skills-pack",
+  "tier": "development",
+  "skillName": "pr-submit",
+  "displayName": "PR Submit",
+  "description": "現在作業を PR として作成または既存 open PR へ更新するときに、検証、`$push`、本文作成、PR 作成または更新までを一気通貫で実行する。Issue がある場合は Issue を優先して本文と base を決定し、PR タイトルと本文の言語は `$writing` で揃える。",
+  "dependencies": [
+    "changelog",
+    "push",
+    "sync-latest",
+    "verification-gate",
+    "writing"
+  ],
+  "contentDigest": "088346932cdaa181681165a858f2043f454f3cf73f5680b035614d818b6eaffd",
+  "manifestDigest": "c09d36bd2c9c51cf0cac2bbce86ea473673cd79c55469f314955aeb36daf285d",
+  "hostArtifacts": [
+    {
+      "host": "claude",
+      "materializedFrontmatterDigest": "c5cc375a8fcd0c6ef335a0e672698899997ccbb84ab1624b005169873110fb54"
+    },
+    {
+      "host": "copilot",
+      "materializedFrontmatterDigest": "f06d42a3882eb818c83acb5356fc3ddee7c9f8bfb2e0a13302b164d4c595b3d8"
+    },
+    {
+      "host": "openai",
+      "path": "agents/openai.yaml",
+      "digest": "aae1fdec0cf7c6226120036e23f16e0f72ad518c7f26d309d33e7cabc26ac91f",
+      "materializedFrontmatterDigest": "dcd3385dee6b4796b9fafa6b37c7791f83c502828315aac691723e656058c74f"
+    }
+  ]
+}

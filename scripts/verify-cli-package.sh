@@ -139,7 +139,7 @@ actual_names = [skill.get("skillName") for skill in skills]
 expected_names = [
     "branch-create",
     "commit",
-    "pr-create",
+    "pr-submit",
     "pr-merge",
     "push",
     "verification-gate",
@@ -154,7 +154,7 @@ if skill_names != ["pr-merge"] or actual_names != expected_names:
         file=sys.stderr,
     )
     sys.exit(1)
-if dependencies_by_skill.get("pr-merge") != ["branch-create", "pr-create", "push"]:
+if dependencies_by_skill.get("pr-merge") != ["branch-create", "pr-submit", "push"]:
     print(
         f"skills-pack skills list did not report pr-merge dependencies. Actual: {dependencies_by_skill.get('pr-merge')}",
         file=sys.stderr,
@@ -212,7 +212,7 @@ fi
 
 dependency_skill_export_path="${tool_path}/exported-dependency-skill"
 "${tool_path}/skills-pack" skills export --host openai --skill pr-merge --output "${dependency_skill_export_path}" >/dev/null
-for expected_skill in branch-create commit pr-create pr-merge push verification-gate; do
+for expected_skill in branch-create commit pr-submit pr-merge push verification-gate; do
   if [[ ! -f "${dependency_skill_export_path}/${expected_skill}/SKILL.md" ]]; then
     echo "skills-pack skills export did not materialize dependency skill ${expected_skill}/SKILL.md for exact skill selection." >&2
     exit 1
