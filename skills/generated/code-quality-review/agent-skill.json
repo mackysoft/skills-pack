@@ -6,9 +6,11 @@
   "skillName": "code-quality-review",
   "displayName": "Code Quality Review",
   "description": "コードベース全体または変更差分に対して、既存ユーティリティの再実装、本質的な重複、低凝集、冗長な状態管理、不要抽象化を findings-first でレビューする。品質上の懸念を整理し、改善方向まで含めた指摘を返したいときに使う。",
-  "dependencies": [],
-  "contentDigest": "4d573ce52d38d708a690bba80a4514cb256507388719b8e79486b2df41b08183",
-  "manifestDigest": "5539a592e30a578c7c358686c799331ebc945cdf7c987c47bfa4e513aaa5e665",
+  "dependencies": [
+    "ultra-review"
+  ],
+  "contentDigest": "5f8ce5d5d9d4893bfe0ab9508078d54c604fd96ba2b77dd57d6b7640d5f0555f",
+  "manifestDigest": "b66cbf83a86d1c22a0cb96dec7821ecd9e3d656cf7d6a8024131996e5c18434e",
   "hostArtifacts": [
     {
       "host": "claude",

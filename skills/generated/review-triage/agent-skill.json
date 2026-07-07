@@ -7,8 +7,8 @@
   "displayName": "Review Triage",
   "description": "貼り付けられた、サブエージェントから返された、または自動レビューで生成されたコードレビュー・設計レビュー指摘を対象コード・仕様・関連資料と照合し、差分がある場合はその文脈も含めて各指摘の正当性を判定して `採用 / 却下 / 保留 / 要確認` にトリアージし、採用項目を束ねた改善設計と次工程を整理する。レビュー返信作成や実装変更そのものが主目的のときは使わない。",
   "dependencies": [],
-  "contentDigest": "bfe391aec166abb5e5492b0785dee3c59d60460d7f09ca0d2d020c1c613cdfe8",
-  "manifestDigest": "53b4ab8b34ed948bba7627b9eb721d7f82ec145202d513de2e64e9145e5c1bca",
+  "contentDigest": "debbda93d57b518f1cb03474ec9aead1d7f4b1d0ec2c643650bffbd7559b3cf2",
+  "manifestDigest": "3ecd84e25a71f431746fe234ae494edb3cefb40cd0cce7ff19c64847ab3857b0",
   "hostArtifacts": [
     {
       "host": "claude",

@@ -9,8 +9,8 @@
   "dependencies": [
     "review-triage"
   ],
-  "contentDigest": "fc2d6a6fbbaf6aed582c3d92b6fce72506487066f72ffc0098ef8d1e2ad27482",
-  "manifestDigest": "27aa35763f642d3266246397b402bf3a7af8e93c79956591e274c0699a4336d7",
+  "contentDigest": "7c40928a13c36749cd240917370a99d103d9fccef31431dc3bfb2cec01911b3d",
+  "manifestDigest": "5aedf9618e068245d6f55334c72ac82dce44fc1131c6ce56dd288fa0c854cc98",
   "hostArtifacts": [
     {
       "host": "claude",

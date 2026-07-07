@@ -41,7 +41,7 @@ PR タイトルと本文は同じ言語で書く。
 `Closes #<N>` のような GitHub の構文は原文のまま置く。
 
 本文は `Summary` と `Verification` を基本にする。
-読者向けの変更説明が必要な場合は `$changelog` で `Changelog` を作る。
+利用判断に使う変更説明が必要な場合は `$changelog` で `Changelog` を作る。
 リスクや戻し方が判断に必要な場合は `Risks / Rollback` を足す。
 
 ### Phase 7: PR を作成または更新する
