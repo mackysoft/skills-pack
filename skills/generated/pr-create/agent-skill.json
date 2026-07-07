@@ -5,27 +5,29 @@
   "tier": "development",
   "skillName": "pr-create",
   "displayName": "PR Create",
-  "description": "PR作成依頼を受けたときに、検証・`$push`・PR作成までを一気通貫で実行する。Issueがある場合はIssueを優先して本文とbaseを決定し、Issueが特定できない場合は確認なしでIssueなし運用として継続する。既存Open PRがある場合は更新か新規作成を確認する。",
+  "description": "PR 作成依頼を受けたときに、検証、`$push`、PR 作成までを一気通貫で実行する。Issue がある場合は Issue を優先して本文と base を決定し、既存 open PR がある場合は更新か新規作成を判断する。PR タイトルと本文の言語は `$writing` で揃える。",
   "dependencies": [
     "push",
-    "verification-gate"
+    "sync-latest",
+    "verification-gate",
+    "writing"
   ],
-  "contentDigest": "5a602b1f380f57aa77063e8764e36a0f57393c6b32df462d07d8d675240a2794",
-  "manifestDigest": "cbbc5b9cb64dc982b6c096e89fb5720ab6789e7093f5a3e014458a10f2ffb8d2",
+  "contentDigest": "233ed8da679a2e45b2970dabf6256d3975458aa6a8a646b061080d846f5dd897",
+  "manifestDigest": "d0b3a550d285baa06d00c0ba22a8b7c6e53cb1d0361626e44aad395b87b71e04",
   "hostArtifacts": [
     {
       "host": "claude",
-      "materializedFrontmatterDigest": "d15a931da6b24826a390f5219cde018909c386e1b956fdb1c23314d7a67c0e82"
+      "materializedFrontmatterDigest": "f713ae093d0eeb9ad9b9073d243de526fbab231f66775b6baebb51f21f298a59"
     },
     {
       "host": "copilot",
-      "materializedFrontmatterDigest": "c345980f6c03f80152bd1c8046c50aed4817a1f60a527d243812768670516757"
+      "materializedFrontmatterDigest": "d5ba9f525195c0c9290549b41d3c606795bec6ff4836f527c5ff07f3015d14aa"
     },
     {
       "host": "openai",
       "path": "agents/openai.yaml",
-      "digest": "9d789152104fb8ab492dace6a4cd295dc5676ea90c75da06ee8e94a0f58bef47",
-      "materializedFrontmatterDigest": "e631fcdbf55fa7112d419264f98e76a72ce916bfc56d483904d54505f44b92dc"
+      "digest": "45653085e843cf13defdff9022bf320cb4fd63b5b2ed31f4cc4c40055c6cc299",
+      "materializedFrontmatterDigest": "cb5888ac7bb037048c42d35ebb7950230b1b5b43ad2a17dd211674a638ad389e"
     }
   ]
 }

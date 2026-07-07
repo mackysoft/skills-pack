@@ -7,11 +7,9 @@
   "displayName": "PR Merge",
   "description": "現在作業または指定PRを安全にマージする。現在作業をブランチへ載せ、PRを取得または作成し、push、Draft解除、CI待機、必須チェック確認、マージ、リモートブランチクリーンアップまで進める。",
   "dependencies": [
-    "branch-create",
     "pr-create",
-    "push"
+    "push",
+    "sync-latest"
   ],
-  "references": [
-    "workflow.md"
-  ]
+  "references": []
 }

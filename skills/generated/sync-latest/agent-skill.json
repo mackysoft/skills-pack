@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "skillBundleVersion": 1,
+  "catalogId": "com.mackysoft.skills-pack",
+  "tier": "development",
+  "skillName": "sync-latest",
+  "displayName": "Sync Latest",
+  "description": "作業開始前、push 前、PR 作成前、PR 更新前、PR マージ前に、origin から最新状態を取得し、現在ブランチへ取り込むべき基準ブランチを決めて安全に同期する。「最新マスタを取り込む」「最新 main を取り込む」「pull して」「PR の base を取り込む」「behind を解消する」「push 前に最新化する」「non-fast-forward を解消する」といった依頼で使う。",
+  "dependencies": [
+    "commit"
+  ],
+  "contentDigest": "7cea7f8067162569440b891cc7d4b781a599989e7ed2d0153fd0f3f72c602fd0",
+  "manifestDigest": "31b693fa12af6c7f3f9cf1df8d94f664ff29576615e46006a5931bd660a0d0f6",
+  "hostArtifacts": [
+    {
+      "host": "claude",
+      "materializedFrontmatterDigest": "677e0beb3393693c4bde1178ddc52f8c791968205d355a800a5bf778086c2f36"
+    },
+    {
+      "host": "copilot",
+      "materializedFrontmatterDigest": "d0ef8805aca548db1bddc8c333883ba6a3eb87d46f31c465e870f372fb0975ed"
+    },
+    {
+      "host": "openai",
+      "path": "agents/openai.yaml",
+      "digest": "a81b7617e0aa1970ed2801f7d989d876bbaed84c8600edb7c2fa8b5af932735b",
+      "materializedFrontmatterDigest": "76b5c621265f0245ee69db682a2358f12b8b485081a3c29644cf9fcc15039975"
+    }
+  ]
+}

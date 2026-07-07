@@ -70,6 +70,7 @@ SkillsPack includes these reusable skills:
 | `pr-merge` | `development` | Merge pull requests through CI and branch cleanup. |
 | `push` | `development` | Commit pending work when needed and push the current branch safely. |
 | `review-triage` | `development` | Triage review comments against code, specifications, and evidence. |
+| `sync-latest` | `development` | Fetch origin and safely synchronize the current branch with the right base. |
 | `test-writer` | `development` | Design and create contract-based tests. |
 | `ultra-review` | `development` | Run deeper multi-pass review and apply safe fixes. |
 | `unity-authoring-rules` | `development` | Apply Unity-specific implementation and review judgment rules with C# rules. |

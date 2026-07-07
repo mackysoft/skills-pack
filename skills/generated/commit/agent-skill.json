@@ -7,8 +7,8 @@
   "displayName": "Commit",
   "description": "変更を責務単位で分割し、Conventional Commits形式の包括的なメッセージでコミットを作成する。",
   "dependencies": [],
-  "contentDigest": "70c198faf080427d82f1bac5b296bcfe8426e6b044401f7b02c41d5cb3bcbe20",
-  "manifestDigest": "d329f8e38e6c3b5c3b47fb334af063f068d906e7849c12d9d85395c5371e62ac",
+  "contentDigest": "fda91230cc07826f70c25ee321f1e3ef6e75acba2b8c6cc0c6881b486d141192",
+  "manifestDigest": "1ca5fc54355f5a758406b68bd854fc0b0b8f261e78d7ab10ddbac5b08c5e04e7",
   "hostArtifacts": [
     {
       "host": "claude",

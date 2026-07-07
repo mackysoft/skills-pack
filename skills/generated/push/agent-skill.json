@@ -7,10 +7,11 @@
   "displayName": "Push",
   "description": "push 指示を受けたときに、未コミット差分があれば `$commit` で責務単位コミットを作成し、現在ブランチを upstream 優先で安全に push する。upstream が無い場合は `origin/<current_branch>` を `-u` で設定して push する。",
   "dependencies": [
-    "commit"
+    "commit",
+    "sync-latest"
   ],
-  "contentDigest": "025076d222cc631c30852570718473833c4723a5d2202d359585ffede95b329c",
-  "manifestDigest": "4798eb77acf0c17f161534d4a0308005213ea3a58811bddd1a630f730ccf62ae",
+  "contentDigest": "4eb270d00d46f92a3c31d88ba113e53c58ab2c728c6c2dfbbc103f4c98d56316",
+  "manifestDigest": "fd1d99b5fef273470c8df7ac991eabe5689ab1a9b9cafb070ddf499eb8f754ea",
   "hostArtifacts": [
     {
       "host": "claude",

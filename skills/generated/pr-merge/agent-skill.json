@@ -7,12 +7,12 @@
   "displayName": "PR Merge",
   "description": "現在作業または指定PRを安全にマージする。現在作業をブランチへ載せ、PRを取得または作成し、push、Draft解除、CI待機、必須チェック確認、マージ、リモートブランチクリーンアップまで進める。",
   "dependencies": [
-    "branch-create",
     "pr-create",
-    "push"
+    "push",
+    "sync-latest"
   ],
-  "contentDigest": "433aefd9ae5e682de57d44dff155e5c3feea81cb466d955dbdf5c889f185c69d",
-  "manifestDigest": "aeedaab4149de392522198db8793b929da12a47e96e80adad0a2e990e97741ac",
+  "contentDigest": "52d360c0c05c185a732d7d517582954de48aebf4af3ca2e4b7398d5ca90ac647",
+  "manifestDigest": "9df108710cc96aba970d8f0ab0f31dad532208f3f1a742003312398a13612a31",
   "hostArtifacts": [
     {
       "host": "claude",
