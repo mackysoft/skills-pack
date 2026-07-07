@@ -13,8 +13,8 @@
     "verification-gate",
     "writing"
   ],
-  "contentDigest": "6b08d6dd8b7f0513c8ed3eda316a09a0bb6c0e95377b6f5a8ab42c93cdf1d57d",
-  "manifestDigest": "8d3fdbf45d220a7a6b45d219e1494a5d7d5c1a12d347ba8a72c9b9b31f9128c1",
+  "contentDigest": "8c8bfe9b1881e4e47501145baa1b230d89b8d43edcf70886fd9fe2ae98763b1b",
+  "manifestDigest": "9dce4a4298040e1f7a9d6737dc6997b7b4f79ea1ed407640b29fc3afa9cc2607",
   "hostArtifacts": [
     {
       "host": "claude",
