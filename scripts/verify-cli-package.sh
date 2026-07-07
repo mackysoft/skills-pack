@@ -94,7 +94,7 @@ actual = [
 ]
 expected = [
     ("general", 1),
-    ("development", 16),
+    ("development", 17),
     ("personal", 0),
 ]
 if actual != expected:
@@ -117,7 +117,7 @@ tiers = payload.get("tiers")
 skill_names = payload.get("skillNames")
 skills = payload.get("skills", [])
 actual_names = [skill.get("skillName") for skill in skills]
-if tiers != ["general", "development", "personal"] or skill_names != ["changelog"] or actual_names != ["changelog"]:
+if tiers != ["general", "development", "personal"] or skill_names != ["changelog"] or actual_names != ["changelog", "writing"]:
     print(
         f"skills-pack skills list did not support exact skill selection. Actual tiers: {tiers}. Actual skillNames: {skill_names}. Actual skills: {actual_names}",
         file=sys.stderr,
@@ -137,12 +137,14 @@ skill_names = payload.get("skillNames")
 skills = payload.get("skills", [])
 actual_names = [skill.get("skillName") for skill in skills]
 expected_names = [
-    "branch-create",
+    "changelog",
     "commit",
-    "pr-create",
     "pr-merge",
+    "pr-submit",
     "push",
+    "sync-latest",
     "verification-gate",
+    "writing",
 ]
 dependencies_by_skill = {
     skill.get("skillName"): skill.get("dependencies")
@@ -154,7 +156,7 @@ if skill_names != ["pr-merge"] or actual_names != expected_names:
         file=sys.stderr,
     )
     sys.exit(1)
-if dependencies_by_skill.get("pr-merge") != ["branch-create", "pr-create", "push"]:
+if dependencies_by_skill.get("pr-merge") != ["pr-submit", "push", "sync-latest"]:
     print(
         f"skills-pack skills list did not report pr-merge dependencies. Actual: {dependencies_by_skill.get('pr-merge')}",
         file=sys.stderr,
@@ -178,9 +180,9 @@ root = json.loads(os.environ["MULTI_TIER_LIST_JSON"])
 payload = root.get("payload") or {}
 tiers = payload.get("tiers")
 skill_count = len(payload.get("skills", []))
-if tiers != ["general", "development"] or skill_count != 17:
+if tiers != ["general", "development"] or skill_count != 18:
     print(
-        f"skills-pack skills list did not support comma-separated tier selection. Expected tiers ['general', 'development'] with 17 skills. Actual tiers: {tiers}. Actual skill count: {skill_count}",
+        f"skills-pack skills list did not support comma-separated tier selection. Expected tiers ['general', 'development'] with 18 skills. Actual tiers: {tiers}. Actual skill count: {skill_count}",
         file=sys.stderr,
     )
     sys.exit(1)
@@ -210,9 +212,14 @@ if [[ -e "${single_skill_export_path}/commit" ]]; then
   exit 1
 fi
 
+if [[ ! -f "${single_skill_export_path}/writing/SKILL.md" ]]; then
+  echo "skills-pack skills export did not materialize dependency skill writing/SKILL.md for exact skill selection." >&2
+  exit 1
+fi
+
 dependency_skill_export_path="${tool_path}/exported-dependency-skill"
 "${tool_path}/skills-pack" skills export --host openai --skill pr-merge --output "${dependency_skill_export_path}" >/dev/null
-for expected_skill in branch-create commit pr-create pr-merge push verification-gate; do
+for expected_skill in changelog commit pr-merge pr-submit push sync-latest verification-gate writing; do
   if [[ ! -f "${dependency_skill_export_path}/${expected_skill}/SKILL.md" ]]; then
     echo "skills-pack skills export did not materialize dependency skill ${expected_skill}/SKILL.md for exact skill selection." >&2
     exit 1
