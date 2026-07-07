@@ -7,6 +7,7 @@
   "displayName": "PR Create",
   "description": "PR 作成依頼を受けたときに、検証、`$push`、PR 作成までを一気通貫で実行する。Issue がある場合は Issue を優先して本文と base を決定し、既存 open PR がある場合は更新か新規作成を判断する。PR タイトルと本文の言語は `$writing` で揃える。",
   "dependencies": [
+    "changelog",
     "push",
     "sync-latest",
     "verification-gate",
