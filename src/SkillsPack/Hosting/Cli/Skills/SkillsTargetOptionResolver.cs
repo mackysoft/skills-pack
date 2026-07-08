@@ -66,4 +66,67 @@ internal static class SkillsTargetOptionResolver
             packageSelection!.Tiers,
             packageSelection.SkillNames);
     }
+
+    public static SkillsPruneTargetOptions? ResolvePrune (
+        string command,
+        string? host,
+        string? scope,
+        string? repoRoot,
+        string? targetDir,
+        string[]? tier,
+        string[]? skill,
+        SkillHostAdapterSet hostAdapters,
+        out CommandResult? errorResult)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(command);
+        ArgumentNullException.ThrowIfNull(hostAdapters);
+
+        var normalizedHost = SkillsCommandOptionNormalizer.NormalizeHost(
+            command,
+            host,
+            hostAdapters,
+            out errorResult);
+        if (errorResult is not null)
+        {
+            return null;
+        }
+
+        var normalizedScope = SkillsCommandOptionNormalizer.NormalizeScope(
+            command,
+            scope,
+            out errorResult);
+        if (errorResult is not null)
+        {
+            return null;
+        }
+
+        var repositoryRoot = SkillsCommandOptionNormalizer.NormalizeRepositoryRootForScope(
+            command,
+            normalizedScope!.Value,
+            repoRoot,
+            out errorResult);
+        if (errorResult is not null)
+        {
+            return null;
+        }
+
+        var pruneSelection = SkillsCommandOptionNormalizer.NormalizeRequiredPruneSelection(
+            command,
+            tier,
+            skill,
+            out errorResult);
+        if (errorResult is not null)
+        {
+            return null;
+        }
+
+        return new SkillsPruneTargetOptions(
+            normalizedHost!,
+            normalizedScope.Value,
+            repositoryRoot,
+            targetDir,
+            pruneSelection!.ReportTiers,
+            pruneSelection.TierFilter,
+            pruneSelection.SkillNames);
+    }
 }

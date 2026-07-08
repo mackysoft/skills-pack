@@ -59,6 +59,7 @@ internal static class SkillsPackSkillServiceCollectionExtensions
         services.AddSingleton<SkillInstallService>();
         services.AddSingleton<SkillUpdateService>();
         services.AddSingleton<SkillUninstallService>();
+        services.AddSingleton<SkillPruneService>();
         services.AddSingleton<SkillInstallationScanner>();
         services.AddSingleton<SkillDoctorService>();
 
