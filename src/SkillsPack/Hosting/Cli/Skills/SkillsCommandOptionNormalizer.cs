@@ -52,6 +52,43 @@ internal static class SkillsCommandOptionNormalizer
         return new SkillPackageSelection(normalizedTiers!, normalizedSkillNames!);
     }
 
+    public static SkillPruneSelection? NormalizeRequiredPruneSelection (
+        string command,
+        string[]? tierLiterals,
+        string[]? skillNameLiterals,
+        out CommandResult? errorResult)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(command);
+
+        if ((tierLiterals == null || tierLiterals.Length == 0) && (skillNameLiterals == null || skillNameLiterals.Length == 0))
+        {
+            errorResult = CommandResult.InvalidArgument(command, "Option '--tier' or '--skill' is required.");
+            return null;
+        }
+
+        var tierFilter = NormalizeTierFilter(command, tierLiterals, out errorResult);
+        if (errorResult is not null)
+        {
+            return null;
+        }
+
+        var reportTiers = tierLiterals == null || tierLiterals.Length == 0
+            ? NormalizeOptionalTiers(command, tierLiterals, out errorResult)
+            : tierFilter;
+        if (errorResult is not null)
+        {
+            return null;
+        }
+
+        var normalizedSkillNames = NormalizeOptionalSkillNames(command, skillNameLiterals, out errorResult);
+        if (errorResult is not null)
+        {
+            return null;
+        }
+
+        return new SkillPruneSelection(reportTiers!, tierFilter!, normalizedSkillNames!);
+    }
+
     private static IReadOnlyList<SkillTier>? NormalizeOptionalTiers (
         string command,
         string[]? tierLiterals,
@@ -61,6 +98,27 @@ internal static class SkillsCommandOptionNormalizer
         var result = tierLiterals == null || tierLiterals.Length == 0
             ? SkillTierLiteralParser.ParseDefinedTiers(SkillsPackSkillTierLiterals.Defined)
             : SkillTierLiteralParser.ParseSelectedTiers(SkillsPackSkillTierLiterals.Defined, tierLiterals);
+        if (!result.IsSuccess)
+        {
+            errorResult = CommandResult.InvalidArgument(command, result.Failure!.Message);
+            return null;
+        }
+
+        return result.Value!;
+    }
+
+    private static IReadOnlyList<SkillTier>? NormalizeTierFilter (
+        string command,
+        string[]? tierLiterals,
+        out CommandResult? errorResult)
+    {
+        errorResult = null;
+        if (tierLiterals == null || tierLiterals.Length == 0)
+        {
+            return Array.Empty<SkillTier>();
+        }
+
+        var result = SkillTierLiteralParser.ParseSelectedTiers(SkillsPackSkillTierLiterals.Defined, tierLiterals);
         if (!result.IsSuccess)
         {
             errorResult = CommandResult.InvalidArgument(command, result.Failure!.Message);

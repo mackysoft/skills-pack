@@ -9,6 +9,7 @@ internal static class SkillsPackCommandNames
     public const string InstallSubcommand = "install";
     public const string UpdateSubcommand = "update";
     public const string UninstallSubcommand = "uninstall";
+    public const string PruneSubcommand = "prune";
     public const string DoctorSubcommand = "doctor";
 
     public const string SkillsList = "skills.list";
@@ -16,5 +17,6 @@ internal static class SkillsPackCommandNames
     public const string SkillsInstall = "skills.install";
     public const string SkillsUpdate = "skills.update";
     public const string SkillsUninstall = "skills.uninstall";
+    public const string SkillsPrune = "skills.prune";
     public const string SkillsDoctor = "skills.doctor";
 }

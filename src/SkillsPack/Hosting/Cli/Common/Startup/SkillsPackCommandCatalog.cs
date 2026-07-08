@@ -14,6 +14,7 @@ internal static class SkillsPackCommandCatalog
         app.Add<SkillsInstallCommand>("skills");
         app.Add<SkillsUpdateCommand>("skills");
         app.Add<SkillsUninstallCommand>("skills");
+        app.Add<SkillsPruneCommand>("skills");
         app.Add<SkillsDoctorCommand>("skills");
 
         return app;

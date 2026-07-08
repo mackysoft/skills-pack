@@ -251,6 +251,57 @@ internal static class SkillsCommandResultFactory
             });
     }
 
+    public static CommandResult CreatePrune (
+        SkillOperationResult<SkillPruneResult> result,
+        string host,
+        SkillScopeKind scope,
+        string? repositoryRoot,
+        string reloadGuidance,
+        IReadOnlyList<string> tiers,
+        IReadOnlyList<string> skillNames)
+    {
+        ArgumentNullException.ThrowIfNull(result);
+        ArgumentException.ThrowIfNullOrWhiteSpace(host);
+        ArgumentException.ThrowIfNullOrWhiteSpace(reloadGuidance);
+        ArgumentNullException.ThrowIfNull(tiers);
+        ArgumentNullException.ThrowIfNull(skillNames);
+
+        if (!result.IsSuccess)
+        {
+            return CreateSkillFailure(SkillsPackCommandNames.SkillsPrune, result.Failure!);
+        }
+
+        var pruneResult = result.Value!;
+        var actions = CreateActionPayloads(
+            pruneResult.Actions,
+            static action => action.Identity,
+            static action => ToActionLiteral(action.ActionKind),
+            static action => action.BlockedReason,
+            static _ => null);
+
+        return CommandResult.Success(
+            command: SkillsPackCommandNames.SkillsPrune,
+            message: pruneResult.DryRun ? "SkillsPack SKILL prune plan generated." : "SkillsPack SKILL packages pruned.",
+            payload: new
+            {
+                host,
+                tiers,
+                skillNames,
+                scope = ToScopeLiteral(scope),
+                repositoryRoot,
+                pruneResult.TargetRoot,
+                pruneResult.DryRun,
+                pruneResult.Force,
+                reloadGuidance,
+                actions,
+                deletedCount = pruneResult.Actions.Count(static action => action.ActionKind == SkillPruneActionKind.Deleted),
+                skippedCurrentCount = pruneResult.Actions.Count(static action => action.ActionKind == SkillPruneActionKind.SkippedCurrent),
+                skippedForeignCatalogCount = pruneResult.Actions.Count(static action => action.ActionKind == SkillPruneActionKind.SkippedForeignCatalog),
+                skippedUnmanagedCount = pruneResult.Actions.Count(static action => action.ActionKind == SkillPruneActionKind.SkippedUnmanaged),
+                blockedCount = pruneResult.Actions.Count(static action => IsBlocked(action.ActionKind)),
+            });
+    }
+
     public static CommandResult CreateDoctor (
         SkillDoctorResult result,
         SkillScopeKind scope,
@@ -386,6 +437,22 @@ internal static class SkillsCommandResultFactory
         };
     }
 
+    private static string ToActionLiteral (SkillPruneActionKind actionKind)
+    {
+        return actionKind switch
+        {
+            SkillPruneActionKind.Deleted => "deleted",
+            SkillPruneActionKind.SkippedCurrent => "skippedCurrent",
+            SkillPruneActionKind.SkippedForeignCatalog => "skippedForeignCatalog",
+            SkillPruneActionKind.SkippedUnmanaged => "skippedUnmanaged",
+            SkillPruneActionKind.BlockedLocalModification => "blockedLocalModification",
+            SkillPruneActionKind.BlockedManifestInvalid => "blockedManifestInvalid",
+            SkillPruneActionKind.BlockedNameCollision => "blockedNameCollision",
+            SkillPruneActionKind.BlockedHostConflict => "blockedHostConflict",
+            _ => actionKind.ToString(),
+        };
+    }
+
     private static bool IsBlocked (SkillInstallActionKind actionKind)
     {
         return actionKind is SkillInstallActionKind.BlockedManagedOverwrite
@@ -403,6 +470,14 @@ internal static class SkillsCommandResultFactory
     private static bool IsBlocked (SkillUninstallActionKind actionKind)
     {
         return actionKind is SkillUninstallActionKind.BlockedLocalModification;
+    }
+
+    private static bool IsBlocked (SkillPruneActionKind actionKind)
+    {
+        return actionKind is SkillPruneActionKind.BlockedLocalModification
+            or SkillPruneActionKind.BlockedManifestInvalid
+            or SkillPruneActionKind.BlockedNameCollision
+            or SkillPruneActionKind.BlockedHostConflict;
     }
 
     private static object[] CreateActionPayloads<TAction> (

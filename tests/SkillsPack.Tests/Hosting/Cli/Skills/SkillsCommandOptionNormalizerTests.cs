@@ -64,6 +64,36 @@ public sealed class SkillsCommandOptionNormalizerTests
         Assert.Equal(["commit", "changelog"], result.SkillNames);
     }
 
+    [Fact]
+    [Trait("Size", "Small")]
+    public void NormalizeRequiredPruneSelection_WhenSelectorsAreMissing_ReturnsInvalidArgument ()
+    {
+        var result = SkillsCommandOptionNormalizer.NormalizeRequiredPruneSelection("skills.prune", null, null, out var errorResult);
+
+        Assert.Null(result);
+        Assert.NotNull(errorResult);
+        Assert.Equal((int)CliExitCode.InvalidArgument, errorResult!.ExitCode);
+        Assert.Contains("--tier", errorResult.Message, StringComparison.Ordinal);
+        Assert.Contains("--skill", errorResult.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    [Trait("Size", "Small")]
+    public void NormalizeRequiredPruneSelection_WhenSkillNamesAreSelected_ReturnsEmptyTierFilter ()
+    {
+        var result = SkillsCommandOptionNormalizer.NormalizeRequiredPruneSelection(
+            "skills.prune",
+            null,
+            ["commit", "changelog", "commit"],
+            out var errorResult);
+
+        Assert.Null(errorResult);
+        Assert.NotNull(result);
+        Assert.Equal(["general", "development", "personal"], result!.ReportTiers.Select(static item => item.Value).ToArray());
+        Assert.Empty(result.TierFilter);
+        Assert.Equal(["commit", "changelog"], result.SkillNames);
+    }
+
     [Theory]
     [Trait("Size", "Small")]
     [InlineData("project", SkillScopeKind.Project)]
