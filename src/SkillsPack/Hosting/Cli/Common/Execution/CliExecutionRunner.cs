@@ -1,6 +1,7 @@
 using ConsoleAppFramework;
 using MackySoft.SkillsPack.Hosting.Cli.Common.Contracts;
 using MackySoft.SkillsPack.Hosting.Cli.Common.Startup;
+using MackySoft.SkillsPack.Hosting.Cli.Skills;
 using MackySoft.SkillsPack.Hosting.Composition.Common;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -26,7 +27,7 @@ internal sealed class CliExecutionRunner
         try
         {
             cancellationToken.ThrowIfCancellationRequested();
-            await app.RunAsync(args, disposeServiceProvider: false).ConfigureAwait(false);
+            await app.RunAsync(SkillsCommandArgumentNormalizer.Normalize(args), disposeServiceProvider: false).ConfigureAwait(false);
         }
         catch (OperationCanceledException)
         {
