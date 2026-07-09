@@ -1,9 +1,6 @@
-using MackySoft.AgentSkills.Distribution;
-using MackySoft.AgentSkills.Doctor;
+using MackySoft.AgentSkills.Hosting.Commands;
 using MackySoft.AgentSkills.Hosts.Registration;
-using MackySoft.AgentSkills.Installation.Results;
-using MackySoft.AgentSkills.Installation.Targeting;
-using MackySoft.AgentSkills.Packaging.Canonical;
+using MackySoft.AgentSkills.OperationReports.Contracts;
 using MackySoft.AgentSkills.Shared;
 using MackySoft.SkillsPack.Hosting.Cli.Common.Contracts;
 using MackySoft.SkillsPack.Hosting.Cli.Common.Execution;
@@ -13,353 +10,41 @@ namespace MackySoft.SkillsPack.Hosting.Cli.Skills;
 internal static class SkillsCommandResultFactory
 {
     private const string ProjectScopeLiteral = "project";
-    private const string UserScopeLiteral = "user";
+    private const string BlockedStatusLiteral = "blocked";
+    private const string DoctorErrorSeverityLiteral = "error";
 
-    public static CommandResult CreateList (
-        SkillPackageCatalog catalog,
+    public static CommandResult Create (
+        AgentSkillsCommandResult result,
         SkillHostAdapterSet hostAdapters)
     {
-        ArgumentNullException.ThrowIfNull(catalog);
+        ArgumentNullException.ThrowIfNull(result);
         ArgumentNullException.ThrowIfNull(hostAdapters);
 
-        return CommandResult.Success(
-            command: SkillsPackCommandNames.SkillsList,
-            message: "SkillsPack SKILL package list retrieval completed.",
-            payload: new
-            {
-                tiers = catalog.SelectedTiers.Select(static tier => tier.Value).ToArray(),
-                skillNames = catalog.SelectedSkillNames.Select(static skillName => skillName.Value).ToArray(),
-                availableTiers = catalog.AvailableTiers
-                    .Select(static tier => new
-                    {
-                        tier = tier.Tier.Value,
-                        skillCount = tier.PackageCount,
-                    })
-                    .ToArray(),
-                skills = catalog.Packages
-                    .OrderBy(static package => package.Manifest.SkillName.Value, StringComparer.Ordinal)
-                    .Select(static package => new
-                    {
-                        skillName = package.Manifest.SkillName.Value,
-                        package.Manifest.DisplayName,
-                        package.Manifest.Description,
-                        dependencies = package.Manifest.Dependencies.Select(static dependency => dependency.Value).ToArray(),
-                        tier = package.Manifest.Tier.Value,
-                        package.Manifest.SkillBundleVersion,
-                        package.Manifest.ContentDigest,
-                        package.Manifest.HostArtifacts,
-                    })
-                    .ToArray(),
-                supportedHosts = hostAdapters.Adapters
-                    .Select(static adapter => new
-                    {
-                        host = adapter.Descriptor.HostKey,
-                        projectTargetDirectory = adapter.Descriptor.ProjectDefaultTargetPath,
-                        userTargetDirectory = adapter.Descriptor.UserDefaultTargetPath,
-                        adapter.Descriptor.ReloadGuidance,
-                    })
-                    .ToArray(),
-            });
-    }
-
-    public static CommandResult CreateExport (
-        SkillOperationResult<string> result,
-        IReadOnlyList<CanonicalSkillPackage> packages,
-        string host,
-        SkillExportFormat format,
-        string reloadGuidance,
-        IReadOnlyList<string> tiers,
-        IReadOnlyList<string> skillNames)
-    {
-        ArgumentNullException.ThrowIfNull(result);
-        ArgumentNullException.ThrowIfNull(packages);
-        ArgumentException.ThrowIfNullOrWhiteSpace(host);
-        ArgumentException.ThrowIfNullOrWhiteSpace(reloadGuidance);
-        ArgumentNullException.ThrowIfNull(tiers);
-        ArgumentNullException.ThrowIfNull(skillNames);
-
         if (!result.IsSuccess)
         {
-            return CreateSkillFailure(SkillsPackCommandNames.SkillsExport, result.Failure!);
+            return CreateSkillFailure(result.Command, result.Failure!);
         }
 
-        return CommandResult.Success(
-            command: SkillsPackCommandNames.SkillsExport,
-            message: "SkillsPack SKILL packages exported.",
-            payload: new
-            {
-                host,
-                tiers,
-                skillNames,
-                format = ToExportFormatLiteral(format),
-                outputRoot = result.Value!,
-                skills = CreateSkillNameList(packages),
-                skillCount = packages.Count,
-                reloadGuidance,
-            });
-    }
-
-    public static CommandResult CreateInstall (
-        SkillOperationResult<SkillInstallResult> result,
-        string host,
-        SkillScopeKind scope,
-        string? repositoryRoot,
-        string reloadGuidance,
-        IReadOnlyList<string> tiers,
-        IReadOnlyList<string> skillNames)
-    {
-        ArgumentNullException.ThrowIfNull(result);
-        ArgumentException.ThrowIfNullOrWhiteSpace(host);
-        ArgumentException.ThrowIfNullOrWhiteSpace(reloadGuidance);
-        ArgumentNullException.ThrowIfNull(tiers);
-        ArgumentNullException.ThrowIfNull(skillNames);
-
-        if (!result.IsSuccess)
+        return result.Payload switch
         {
-            return CreateSkillFailure(SkillsPackCommandNames.SkillsInstall, result.Failure!);
-        }
-
-        var installResult = result.Value!;
-        var actions = CreateActionPayloads(
-            installResult.Actions,
-            static action => action.Identity,
-            static action => ToActionLiteral(action.ActionKind),
-            static action => action.BlockedReason,
-            static action => action.Diffs);
-
-        return CommandResult.Success(
-            command: SkillsPackCommandNames.SkillsInstall,
-            message: installResult.DryRun ? "SkillsPack SKILL install plan generated." : "SkillsPack SKILL packages installed.",
-            payload: new
-            {
-                host,
-                tiers,
-                skillNames,
-                scope = ToScopeLiteral(scope),
-                repositoryRoot,
-                installResult.TargetRoot,
-                installResult.DryRun,
-                installResult.Force,
-                installResult.PrintDiff,
-                reloadGuidance,
-                actions,
-                createdCount = installResult.Actions.Count(static action => action.ActionKind == SkillInstallActionKind.Created),
-                updatedCount = installResult.Actions.Count(static action => action.ActionKind == SkillInstallActionKind.Updated),
-                noOpCount = installResult.Actions.Count(static action => action.ActionKind == SkillInstallActionKind.NoOp),
-                blockedCount = installResult.Actions.Count(static action => IsBlocked(action.ActionKind)),
-            });
-    }
-
-    public static CommandResult CreateUpdate (
-        SkillOperationResult<SkillUpdateResult> result,
-        string host,
-        SkillScopeKind scope,
-        string? repositoryRoot,
-        string reloadGuidance,
-        IReadOnlyList<string> tiers,
-        IReadOnlyList<string> skillNames)
-    {
-        ArgumentNullException.ThrowIfNull(result);
-        ArgumentException.ThrowIfNullOrWhiteSpace(host);
-        ArgumentException.ThrowIfNullOrWhiteSpace(reloadGuidance);
-        ArgumentNullException.ThrowIfNull(tiers);
-        ArgumentNullException.ThrowIfNull(skillNames);
-
-        if (!result.IsSuccess)
-        {
-            return CreateSkillFailure(SkillsPackCommandNames.SkillsUpdate, result.Failure!);
-        }
-
-        var updateResult = result.Value!;
-        var actions = CreateActionPayloads(
-            updateResult.Actions,
-            static action => action.Identity,
-            static action => ToActionLiteral(action.ActionKind),
-            static action => action.BlockedReason,
-            static action => action.Diffs);
-
-        return CommandResult.Success(
-            command: SkillsPackCommandNames.SkillsUpdate,
-            message: updateResult.DryRun ? "SkillsPack SKILL update plan generated." : "SkillsPack SKILL packages updated.",
-            payload: new
-            {
-                host,
-                tiers,
-                skillNames,
-                scope = ToScopeLiteral(scope),
-                repositoryRoot,
-                updateResult.TargetRoot,
-                updateResult.DryRun,
-                updateResult.Force,
-                updateResult.PrintDiff,
-                reloadGuidance,
-                actions,
-                createdCount = updateResult.Actions.Count(static action => action.ActionKind == SkillUpdateActionKind.Created),
-                updatedCount = updateResult.Actions.Count(static action => action.ActionKind == SkillUpdateActionKind.Updated),
-                noOpCount = updateResult.Actions.Count(static action => action.ActionKind == SkillUpdateActionKind.NoOp),
-                blockedCount = updateResult.Actions.Count(static action => IsBlocked(action.ActionKind)),
-            });
-    }
-
-    public static CommandResult CreateUninstall (
-        SkillOperationResult<SkillUninstallResult> result,
-        string host,
-        SkillScopeKind scope,
-        string? repositoryRoot,
-        string reloadGuidance,
-        IReadOnlyList<string> tiers,
-        IReadOnlyList<string> skillNames)
-    {
-        ArgumentNullException.ThrowIfNull(result);
-        ArgumentException.ThrowIfNullOrWhiteSpace(host);
-        ArgumentException.ThrowIfNullOrWhiteSpace(reloadGuidance);
-        ArgumentNullException.ThrowIfNull(tiers);
-        ArgumentNullException.ThrowIfNull(skillNames);
-
-        if (!result.IsSuccess)
-        {
-            return CreateSkillFailure(SkillsPackCommandNames.SkillsUninstall, result.Failure!);
-        }
-
-        var uninstallResult = result.Value!;
-        var actions = CreateActionPayloads(
-            uninstallResult.Actions,
-            static action => action.Identity,
-            static action => ToActionLiteral(action.ActionKind),
-            static action => action.BlockedReason,
-            static _ => null);
-
-        return CommandResult.Success(
-            command: SkillsPackCommandNames.SkillsUninstall,
-            message: uninstallResult.DryRun ? "SkillsPack SKILL uninstall plan generated." : "SkillsPack SKILL packages uninstalled.",
-            payload: new
-            {
-                host,
-                tiers,
-                skillNames,
-                scope = ToScopeLiteral(scope),
-                repositoryRoot,
-                uninstallResult.TargetRoot,
-                uninstallResult.DryRun,
-                uninstallResult.Force,
-                reloadGuidance,
-                actions,
-                deletedCount = uninstallResult.Actions.Count(static action => action.ActionKind == SkillUninstallActionKind.Deleted),
-                noOpCount = uninstallResult.Actions.Count(static action => action.ActionKind == SkillUninstallActionKind.NoOp),
-                skippedUnmanagedCount = uninstallResult.Actions.Count(static action => action.ActionKind == SkillUninstallActionKind.SkippedUnmanaged),
-                blockedCount = uninstallResult.Actions.Count(static action => IsBlocked(action.ActionKind)),
-            });
-    }
-
-    public static CommandResult CreatePrune (
-        SkillOperationResult<SkillPruneResult> result,
-        string host,
-        SkillScopeKind scope,
-        string? repositoryRoot,
-        string reloadGuidance,
-        IReadOnlyList<string> tiers,
-        IReadOnlyList<string> skillNames)
-    {
-        ArgumentNullException.ThrowIfNull(result);
-        ArgumentException.ThrowIfNullOrWhiteSpace(host);
-        ArgumentException.ThrowIfNullOrWhiteSpace(reloadGuidance);
-        ArgumentNullException.ThrowIfNull(tiers);
-        ArgumentNullException.ThrowIfNull(skillNames);
-
-        if (!result.IsSuccess)
-        {
-            return CreateSkillFailure(SkillsPackCommandNames.SkillsPrune, result.Failure!);
-        }
-
-        var pruneResult = result.Value!;
-        var actions = CreateActionPayloads(
-            pruneResult.Actions,
-            static action => action.Identity,
-            static action => ToActionLiteral(action.ActionKind),
-            static action => action.BlockedReason,
-            static _ => null);
-
-        return CommandResult.Success(
-            command: SkillsPackCommandNames.SkillsPrune,
-            message: pruneResult.DryRun ? "SkillsPack SKILL prune plan generated." : "SkillsPack SKILL packages pruned.",
-            payload: new
-            {
-                host,
-                tiers,
-                skillNames,
-                scope = ToScopeLiteral(scope),
-                repositoryRoot,
-                pruneResult.TargetRoot,
-                pruneResult.DryRun,
-                pruneResult.Force,
-                reloadGuidance,
-                actions,
-                deletedCount = pruneResult.Actions.Count(static action => action.ActionKind == SkillPruneActionKind.Deleted),
-                skippedCurrentCount = pruneResult.Actions.Count(static action => action.ActionKind == SkillPruneActionKind.SkippedCurrent),
-                skippedForeignCatalogCount = pruneResult.Actions.Count(static action => action.ActionKind == SkillPruneActionKind.SkippedForeignCatalog),
-                skippedUnmanagedCount = pruneResult.Actions.Count(static action => action.ActionKind == SkillPruneActionKind.SkippedUnmanaged),
-                blockedCount = pruneResult.Actions.Count(static action => IsBlocked(action.ActionKind)),
-            });
-    }
-
-    public static CommandResult CreateDoctor (
-        SkillDoctorResult result,
-        SkillScopeKind scope,
-        string? repositoryRoot,
-        string reloadGuidance,
-        IReadOnlyList<string> tiers,
-        IReadOnlyList<string> skillNames)
-    {
-        ArgumentNullException.ThrowIfNull(result);
-        ArgumentException.ThrowIfNullOrWhiteSpace(reloadGuidance);
-        ArgumentNullException.ThrowIfNull(tiers);
-        ArgumentNullException.ThrowIfNull(skillNames);
-
-        var payload = new
-        {
-            host = result.Host,
-            tiers,
-            skillNames,
-            scope = ToScopeLiteral(scope),
-            repositoryRoot,
-            result.TargetRoot,
-            reloadGuidance,
-            result.IsHealthy,
-            diagnostics = result.Diagnostics
-                .Select(static diagnostic => new
-                {
-                    severity = ToSeverityLiteral(diagnostic.Severity),
-                    diagnostic.Code,
-                    diagnostic.Message,
-                    diagnostic.SkillName,
-                })
-                .ToArray(),
+            SkillListReport report => CommandResult.Success(
+                result.Command,
+                "SkillsPack SKILL package list retrieval completed.",
+                CreateListPayload(report)),
+            SkillExportReport report => CommandResult.Success(
+                result.Command,
+                "SkillsPack SKILL packages exported.",
+                CreateExportPayload(report)),
+            SkillOperationReport report => CommandResult.Success(
+                result.Command,
+                CreateOperationMessage(result.Command, report),
+                CreateOperationPayload(result.Command, report, hostAdapters)),
+            SkillDoctorReport report => CreateDoctor(result.Command, report, hostAdapters),
+            _ => CommandFailureProjector.Create(
+                result.Command,
+                ApplicationFailure.InternalError($"Unsupported Agent Skills command payload: {result.Payload?.GetType().FullName ?? "(null)"}"),
+                new { }),
         };
-
-        if (result.IsHealthy)
-        {
-            return CommandResult.Success(
-                command: SkillsPackCommandNames.SkillsDoctor,
-                message: "SkillsPack SKILL packages are healthy.",
-                payload: payload);
-        }
-
-        var errors = result.Diagnostics
-            .Where(static diagnostic => diagnostic.Severity == SkillDoctorSeverity.Error)
-            .Select(static diagnostic => new CommandError(ToCode(diagnostic.Code), diagnostic.Message, diagnostic.SkillName))
-            .ToArray();
-        if (errors.Length == 0)
-        {
-            errors = [new CommandError(SkillsPackCoreErrorCodes.InternalError, "SkillsPack skills doctor reported an unknown error.", null)];
-        }
-
-        return CommandFailureProjector.Create(
-            SkillsPackCommandNames.SkillsDoctor,
-            "SkillsPack skills doctor reported errors.",
-            payload,
-            errors
-                .Select(static error => ApplicationFailure.InternalError(error.Message, error.Code, error.OpId))
-                .ToArray());
     }
 
     public static CommandResult CreateSkillFailure (
@@ -369,191 +54,323 @@ internal static class SkillsCommandResultFactory
         return SkillFailureCommandResultMapper.Map(command, failure);
     }
 
-    private static string[] CreateSkillNameList (IReadOnlyList<CanonicalSkillPackage> packages)
+    private static object CreateListPayload (SkillListReport report)
     {
-        return packages
-            .Select(static package => package.Manifest.SkillName.Value)
-            .Order(StringComparer.Ordinal)
+        return new
+        {
+            tiers = report.Tiers,
+            skillNames = report.SkillNames,
+            availableTiers = report.AvailableTiers
+                .Select(static tier => new
+                {
+                    tier = tier.Tier,
+                    skillCount = tier.SkillCount,
+                })
+                .ToArray(),
+            skills = report.Skills
+                .Select(static skill => new
+                {
+                    skillName = skill.SkillName,
+                    skill.DisplayName,
+                    skill.Description,
+                    dependencies = skill.Dependencies,
+                    tier = skill.Tier,
+                    skill.SkillBundleVersion,
+                    skill.ContentDigest,
+                    skill.HostArtifacts,
+                })
+                .ToArray(),
+            supportedHosts = report.SupportedHosts
+                .Select(static host => new
+                {
+                    host = host.Host,
+                    projectTargetDirectory = host.ProjectDefaultTargetPath,
+                    userTargetDirectory = host.UserDefaultTargetPath,
+                    host.ReloadGuidance,
+                })
+                .ToArray(),
+        };
+    }
+
+    private static object CreateExportPayload (SkillExportReport report)
+    {
+        return new
+        {
+            host = report.Host,
+            tiers = report.Tiers,
+            skillNames = report.SkillNames,
+            format = report.Format,
+            outputRoot = report.OutputPath,
+            skills = report.Skills,
+            skillCount = report.SkillCount,
+            reloadGuidance = report.ReloadGuidance,
+        };
+    }
+
+    private static object CreateOperationPayload (
+        string command,
+        SkillOperationReport report,
+        SkillHostAdapterSet hostAdapters)
+    {
+        var actions = CreateActionPayloads(report.Actions, report.TargetRoot);
+        var repositoryRoot = InferRepositoryRoot(report.Host, report.Scope, report.TargetRoot, hostAdapters);
+
+        return command switch
+        {
+            SkillsPackCommandNames.SkillsInstall => new
+            {
+                host = report.Host,
+                tiers = report.Tiers,
+                skillNames = report.SkillNames,
+                scope = report.Scope,
+                repositoryRoot,
+                report.TargetRoot,
+                report.DryRun,
+                report.Force,
+                printDiff = HasDiffs(report),
+                reloadGuidance = report.ReloadGuidance,
+                actions,
+                createdCount = CountAction(report, "created"),
+                updatedCount = CountAction(report, "updated"),
+                noOpCount = CountAction(report, "noOp"),
+                blockedCount = CountBlocked(report),
+            },
+            SkillsPackCommandNames.SkillsUpdate => new
+            {
+                host = report.Host,
+                tiers = report.Tiers,
+                skillNames = report.SkillNames,
+                scope = report.Scope,
+                repositoryRoot,
+                report.TargetRoot,
+                report.DryRun,
+                report.Force,
+                printDiff = HasDiffs(report),
+                reloadGuidance = report.ReloadGuidance,
+                actions,
+                createdCount = CountAction(report, "created"),
+                updatedCount = CountAction(report, "updated"),
+                noOpCount = CountAction(report, "noOp"),
+                blockedCount = CountBlocked(report),
+            },
+            SkillsPackCommandNames.SkillsUninstall => new
+            {
+                host = report.Host,
+                tiers = report.Tiers,
+                skillNames = report.SkillNames,
+                scope = report.Scope,
+                repositoryRoot,
+                report.TargetRoot,
+                report.DryRun,
+                report.Force,
+                reloadGuidance = report.ReloadGuidance,
+                actions,
+                deletedCount = CountAction(report, "deleted"),
+                noOpCount = CountAction(report, "noOp"),
+                skippedUnmanagedCount = CountAction(report, "skippedUnmanaged"),
+                blockedCount = CountBlocked(report),
+            },
+            SkillsPackCommandNames.SkillsPrune => new
+            {
+                host = report.Host,
+                tiers = report.Tiers,
+                skillNames = report.SkillNames,
+                scope = report.Scope,
+                repositoryRoot,
+                report.TargetRoot,
+                report.DryRun,
+                report.Force,
+                reloadGuidance = report.ReloadGuidance,
+                actions,
+                deletedCount = CountAction(report, "deleted"),
+                skippedCurrentCount = CountAction(report, "skippedCurrent"),
+                skippedForeignCatalogCount = CountAction(report, "skippedForeignCatalog"),
+                skippedUnmanagedCount = CountAction(report, "skippedUnmanaged"),
+                blockedCount = CountBlocked(report),
+            },
+            _ => new
+            {
+                host = report.Host,
+                tiers = report.Tiers,
+                skillNames = report.SkillNames,
+                scope = report.Scope,
+                repositoryRoot,
+                report.TargetRoot,
+                report.DryRun,
+                report.Force,
+                reloadGuidance = report.ReloadGuidance,
+                actions,
+                actionCounts = report.ActionCounts,
+                statusCounts = report.StatusCounts,
+            },
+        };
+    }
+
+    private static CommandResult CreateDoctor (
+        string command,
+        SkillDoctorReport report,
+        SkillHostAdapterSet hostAdapters)
+    {
+        var payload = new
+        {
+            host = report.Host,
+            tiers = report.Tiers,
+            skillNames = report.SkillNames,
+            scope = report.Scope,
+            repositoryRoot = InferRepositoryRoot(report.Host, report.Scope, report.TargetRoot, hostAdapters),
+            report.TargetRoot,
+            reloadGuidance = ResolveReloadGuidance(report.Host, hostAdapters),
+            report.IsHealthy,
+            diagnostics = report.Diagnostics
+                .Select(static diagnostic => new
+                {
+                    severity = diagnostic.Severity,
+                    diagnostic.Code,
+                    diagnostic.Message,
+                    diagnostic.SkillName,
+                })
+                .ToArray(),
+        };
+
+        if (report.IsHealthy)
+        {
+            return CommandResult.Success(
+                command,
+                "SkillsPack SKILL packages are healthy.",
+                payload);
+        }
+
+        var failures = report.Diagnostics
+            .Where(static diagnostic => string.Equals(diagnostic.Severity, DoctorErrorSeverityLiteral, StringComparison.Ordinal))
+            .Select(static diagnostic => ApplicationFailure.InternalError(diagnostic.Message, ToCode(diagnostic.Code), diagnostic.SkillName))
             .ToArray();
+        if (failures.Length == 0)
+        {
+            failures =
+            [
+                ApplicationFailure.InternalError("SkillsPack skills doctor reported an unknown error."),
+            ];
+        }
+
+        return CommandFailureProjector.Create(
+            command,
+            "SkillsPack skills doctor reported errors.",
+            payload,
+            failures);
     }
 
-    private static string ToScopeLiteral (SkillScopeKind scope)
+    private static string CreateOperationMessage (
+        string command,
+        SkillOperationReport report)
     {
-        return scope switch
+        return command switch
         {
-            SkillScopeKind.Project => ProjectScopeLiteral,
-            SkillScopeKind.User => UserScopeLiteral,
-            _ => scope.ToString(),
+            SkillsPackCommandNames.SkillsInstall => report.DryRun ? "SkillsPack SKILL install plan generated." : "SkillsPack SKILL packages installed.",
+            SkillsPackCommandNames.SkillsUpdate => report.DryRun ? "SkillsPack SKILL update plan generated." : "SkillsPack SKILL packages updated.",
+            SkillsPackCommandNames.SkillsUninstall => report.DryRun ? "SkillsPack SKILL uninstall plan generated." : "SkillsPack SKILL packages uninstalled.",
+            SkillsPackCommandNames.SkillsPrune => report.DryRun ? "SkillsPack SKILL prune plan generated." : "SkillsPack SKILL packages pruned.",
+            _ => "SkillsPack SKILL operation completed.",
         };
     }
 
-    private static string ToExportFormatLiteral (SkillExportFormat format)
-    {
-        return format switch
-        {
-            SkillExportFormat.Directory => "directory",
-            SkillExportFormat.Zip => "zip",
-            _ => format.ToString(),
-        };
-    }
-
-    private static string ToActionLiteral (SkillInstallActionKind actionKind)
-    {
-        return actionKind switch
-        {
-            SkillInstallActionKind.Created => "created",
-            SkillInstallActionKind.Updated => "updated",
-            SkillInstallActionKind.NoOp => "noOp",
-            SkillInstallActionKind.BlockedManagedOverwrite => "blockedManagedOverwrite",
-            SkillInstallActionKind.BlockedLocalModification => "blockedLocalModification",
-            SkillInstallActionKind.BlockedUnmanaged => "blockedUnmanaged",
-            _ => actionKind.ToString(),
-        };
-    }
-
-    private static string ToActionLiteral (SkillUpdateActionKind actionKind)
-    {
-        return actionKind switch
-        {
-            SkillUpdateActionKind.Created => "created",
-            SkillUpdateActionKind.Updated => "updated",
-            SkillUpdateActionKind.NoOp => "noOp",
-            SkillUpdateActionKind.BlockedLocalModification => "blockedLocalModification",
-            SkillUpdateActionKind.BlockedUnmanaged => "blockedUnmanaged",
-            SkillUpdateActionKind.BlockedVersionAhead => "blockedVersionAhead",
-            _ => actionKind.ToString(),
-        };
-    }
-
-    private static string ToActionLiteral (SkillUninstallActionKind actionKind)
-    {
-        return actionKind switch
-        {
-            SkillUninstallActionKind.Deleted => "deleted",
-            SkillUninstallActionKind.NoOp => "noOp",
-            SkillUninstallActionKind.SkippedUnmanaged => "skippedUnmanaged",
-            SkillUninstallActionKind.BlockedLocalModification => "blockedLocalModification",
-            _ => actionKind.ToString(),
-        };
-    }
-
-    private static string ToActionLiteral (SkillPruneActionKind actionKind)
-    {
-        return actionKind switch
-        {
-            SkillPruneActionKind.Deleted => "deleted",
-            SkillPruneActionKind.SkippedCurrent => "skippedCurrent",
-            SkillPruneActionKind.SkippedForeignCatalog => "skippedForeignCatalog",
-            SkillPruneActionKind.SkippedUnmanaged => "skippedUnmanaged",
-            SkillPruneActionKind.BlockedLocalModification => "blockedLocalModification",
-            SkillPruneActionKind.BlockedManifestInvalid => "blockedManifestInvalid",
-            SkillPruneActionKind.BlockedNameCollision => "blockedNameCollision",
-            SkillPruneActionKind.BlockedHostConflict => "blockedHostConflict",
-            _ => actionKind.ToString(),
-        };
-    }
-
-    private static bool IsBlocked (SkillInstallActionKind actionKind)
-    {
-        return actionKind is SkillInstallActionKind.BlockedManagedOverwrite
-            or SkillInstallActionKind.BlockedLocalModification
-            or SkillInstallActionKind.BlockedUnmanaged;
-    }
-
-    private static bool IsBlocked (SkillUpdateActionKind actionKind)
-    {
-        return actionKind is SkillUpdateActionKind.BlockedLocalModification
-            or SkillUpdateActionKind.BlockedUnmanaged
-            or SkillUpdateActionKind.BlockedVersionAhead;
-    }
-
-    private static bool IsBlocked (SkillUninstallActionKind actionKind)
-    {
-        return actionKind is SkillUninstallActionKind.BlockedLocalModification;
-    }
-
-    private static bool IsBlocked (SkillPruneActionKind actionKind)
-    {
-        return actionKind is SkillPruneActionKind.BlockedLocalModification
-            or SkillPruneActionKind.BlockedManifestInvalid
-            or SkillPruneActionKind.BlockedNameCollision
-            or SkillPruneActionKind.BlockedHostConflict;
-    }
-
-    private static object[] CreateActionPayloads<TAction> (
-        IReadOnlyList<TAction> actions,
-        Func<TAction, SkillInstallIdentity> getIdentity,
-        Func<TAction, string> getActionLiteral,
-        Func<TAction, SkillBlockedReason?> getBlockedReason,
-        Func<TAction, IReadOnlyList<SkillActionDiff>?> getDiffs)
+    private static object[] CreateActionPayloads (
+        IReadOnlyList<SkillOperationActionReport> actions,
+        string targetRoot)
     {
         return actions
-            .OrderBy(action => getIdentity(action).SkillName.Value, StringComparer.Ordinal)
-            .Select(action =>
+            .Select(action => new
             {
-                var identity = getIdentity(action);
-                return new
-                {
-                    skillName = identity.SkillName.Value,
-                    action = getActionLiteral(action),
-                    identity.TargetRoot,
-                    blockedReason = ToBlockedReasonLiteral(getBlockedReason(action)),
-                    diffs = CreateDiffPayloads(getDiffs(action)),
-                };
+                skillName = action.SkillName,
+                action = action.Action,
+                targetRoot,
+                blockedReason = action.BlockedReason,
+                diffs = CreateDiffPayloads(action.FileDiffs),
             })
             .ToArray();
     }
 
-    private static string? ToBlockedReasonLiteral (SkillBlockedReason? reason)
+    private static object[] CreateDiffPayloads (IReadOnlyList<SkillOperationFileDiffReport> fileDiffs)
     {
-        return reason switch
+        if (fileDiffs.Count == 0)
         {
-            null => null,
-            SkillBlockedReason.ManagedOverwriteRequiresForce => "managedOverwriteRequiresForce",
-            SkillBlockedReason.LocalModificationRequiresForce => "localModificationRequiresForce",
-            SkillBlockedReason.UnmanagedTarget => "unmanagedTarget",
-            SkillBlockedReason.InstalledVersionAhead => "installedVersionAhead",
-            _ => reason.Value.ToString(),
-        };
-    }
+            return [];
+        }
 
-    private static object[] CreateDiffPayloads (IReadOnlyList<SkillActionDiff>? diffs)
-    {
-        return (diffs ?? Array.Empty<SkillActionDiff>())
-            .Select(static diff => new
+        return
+        [
+            new
             {
-                files = diff.Files
+                files = fileDiffs
                     .Select(static file => new
                     {
                         relativePath = file.RelativePath,
-                        changeKind = ToDiffChangeKindLiteral(file.ChangeKind),
+                        changeKind = file.ChangeKind,
                         beforeContent = file.BeforeContent,
                         afterContent = file.AfterContent,
                     })
                     .ToArray(),
-            })
-            .ToArray();
+            },
+        ];
     }
 
-    private static string ToDiffChangeKindLiteral (SkillDiffChangeKind changeKind)
+    private static int CountAction (
+        SkillOperationReport report,
+        string action)
     {
-        return changeKind switch
-        {
-            SkillDiffChangeKind.Added => "added",
-            SkillDiffChangeKind.Modified => "modified",
-            SkillDiffChangeKind.Deleted => "deleted",
-            _ => changeKind.ToString(),
-        };
+        return report.Actions.Count(candidate => string.Equals(candidate.Action, action, StringComparison.Ordinal));
     }
 
-    private static string ToSeverityLiteral (SkillDoctorSeverity severity)
+    private static int CountBlocked (SkillOperationReport report)
     {
-        return severity switch
+        return report.Actions.Count(static action =>
+            string.Equals(action.Status, BlockedStatusLiteral, StringComparison.Ordinal)
+            || action.BlockedReason is not null);
+    }
+
+    private static bool HasDiffs (SkillOperationReport report)
+    {
+        return report.Actions.Any(static action => action.FileDiffs.Count > 0);
+    }
+
+    private static string? InferRepositoryRoot (
+        string host,
+        string scope,
+        string targetRoot,
+        SkillHostAdapterSet hostAdapters)
+    {
+        if (!string.Equals(scope, ProjectScopeLiteral, StringComparison.Ordinal))
         {
-            SkillDoctorSeverity.Info => "info",
-            SkillDoctorSeverity.Error => "error",
-            _ => severity.ToString(),
-        };
+            return null;
+        }
+
+        var adapterResult = hostAdapters.GetAdapter(host);
+        var projectDefaultTargetPath = adapterResult.IsSuccess
+            ? adapterResult.Value!.Descriptor.ProjectDefaultTargetPath
+            : null;
+        if (string.IsNullOrWhiteSpace(projectDefaultTargetPath))
+        {
+            return null;
+        }
+
+        var normalizedSuffix = Path.DirectorySeparatorChar + projectDefaultTargetPath.Replace('/', Path.DirectorySeparatorChar);
+        var comparison = OperatingSystem.IsWindows()
+            ? StringComparison.OrdinalIgnoreCase
+            : StringComparison.Ordinal;
+        if (!targetRoot.EndsWith(normalizedSuffix, comparison))
+        {
+            return null;
+        }
+
+        var repositoryRoot = targetRoot[..^normalizedSuffix.Length];
+        return string.IsNullOrWhiteSpace(repositoryRoot) ? null : repositoryRoot;
+    }
+
+    private static string ResolveReloadGuidance (
+        string host,
+        SkillHostAdapterSet hostAdapters)
+    {
+        var adapterResult = hostAdapters.GetAdapter(host);
+        return adapterResult.IsSuccess ? adapterResult.Value!.Descriptor.ReloadGuidance : string.Empty;
     }
 
     private static SkillsPackCode ToCode (string code)

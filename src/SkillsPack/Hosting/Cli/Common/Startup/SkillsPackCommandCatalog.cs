@@ -1,5 +1,5 @@
 using ConsoleAppFramework;
-using MackySoft.SkillsPack.Hosting.Cli.Skills;
+using MackySoft.AgentSkills.ConsoleAppFramework;
 
 namespace MackySoft.SkillsPack.Hosting.Cli.Common.Startup;
 
@@ -9,13 +9,7 @@ internal static class SkillsPackCommandCatalog
     {
         ArgumentNullException.ThrowIfNull(app);
 
-        app.Add<SkillsListCommand>("skills");
-        app.Add<SkillsExportCommand>("skills");
-        app.Add<SkillsInstallCommand>("skills");
-        app.Add<SkillsUpdateCommand>("skills");
-        app.Add<SkillsUninstallCommand>("skills");
-        app.Add<SkillsPruneCommand>("skills");
-        app.Add<SkillsDoctorCommand>("skills");
+        app.RegisterAgentSkillsCommands();
 
         return app;
     }
