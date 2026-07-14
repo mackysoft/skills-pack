@@ -193,4 +193,4 @@ jobs:
           --tag-name "${RELEASE_TAG}"
           --package-glob "artifacts/packages/*.nupkg"
           --title "${PACKAGE_VERSION}"
-          --notes ""
+          --generate-notes
