@@ -5,26 +5,27 @@
   "tier": "development",
   "skillName": "ultra-review",
   "displayName": "Ultra Review",
-  "description": "サブエージェントを複数起動し、変更差分または指定範囲を目的との整合、必要性、脆弱性、凝集性、責務境界などから反復レビューする。所見をトリアージし、安全に修正できる採用所見の修正、検証、再レビューまで行う。深いレビュー、修正込みレビュー、または ultra-review が求められたときに使う。編集禁止やレビューのみの指定がある場合は所見と対応方針だけを返す。",
+  "description": "タスク完了前の成果物、変更差分、または指定範囲に対し、対象と起こり得る失敗から必要な観点を選んで複数のサブエージェントで最終点検する。所見の妥当性と今回の対象との関係をトリアージし、対象内の修正、検証、再レビューを収束させる。深いレビュー、修正込みレビュー、または ultra-review が求められたときに使う。編集禁止やレビューのみの指定がある場合は所見と対応方針だけを返す。",
   "dependencies": [
-    "review-triage"
+    "review-triage",
+    "writing"
   ],
-  "contentDigest": "fbd702ed124f76ed00d2bb5c77885a6b2c2f14dd81df4ce3c718b330ee7319e0",
-  "manifestDigest": "6aab3ef065f284368a213cd39e3714ed4fa78fdda8cd92ee0dd0be0bc1da43a4",
+  "contentDigest": "1f5648186b73169fa26f6da79e89b45b72b6fb3b785bedea7fd38e6e4272aa7d",
+  "manifestDigest": "b731937af961fe390ef2a3f0229289f514b26b9eea7079f3c5c15c7cfeba5f53",
   "hostArtifacts": [
     {
       "host": "claude",
-      "materializedFrontmatterDigest": "1c6a7549ac31fc2221282116950a94318c7d24dee5dad47a142c6fe10451e395"
+      "materializedFrontmatterDigest": "5fcb04b1e275ea290d4f3b42f308c9c305f0491a35351603d5f49196494eb4fd"
     },
     {
       "host": "copilot",
-      "materializedFrontmatterDigest": "784e1d28625a0c03de5b8fb63d49b98b2d323aec4d16ba872190050ee8e3ece9"
+      "materializedFrontmatterDigest": "bd199c48af6f9d0a290d129cbc628236a81aa5df32281709dc5e95484f1dad26"
     },
     {
       "host": "openai",
       "path": "agents/openai.yaml",
-      "digest": "7ff6b61679dceec6a575a9244dfc6e2b64521c71840426eb5644915b5e2a5034",
-      "materializedFrontmatterDigest": "22ffc1be69352bf0260aa27a8cd4108ea170ead5eada796a86593854b8deb2b4"
+      "digest": "c2f0adab7ceaac894ada6b63a92e504cfbd5e5e8c9761a78f95679fc495ffce3",
+      "materializedFrontmatterDigest": "43a4bb3072dce6f4f226e0bb645e7be189113b0e1dbe834551d52c13cc388c7d"
     }
   ]
 }
