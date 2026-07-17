@@ -72,7 +72,7 @@ SkillsPack includes these reusable skills:
 | `push` | `development` | Commit pending work when needed and push the current branch safely. |
 | `review-triage` | `development` | Triage review comments against code, specifications, and evidence. |
 | `sync-latest` | `development` | Fetch origin and safely synchronize the current branch with the right base. |
-| `test-writer` | `development` | Design and create contract-based tests. |
+| `test-authoring` | `development` | Design, update, and consolidate minimal contract-based test suites. |
 | `ultra-review` | `development` | Run deeper multi-pass review and apply safe fixes. |
 | `unity-authoring-rules` | `development` | Apply Unity-specific implementation and review judgment rules with C# rules. |
 | `verification-gate` | `development` | Run the verification needed before PRs or final checks. |

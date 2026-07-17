@@ -5,7 +5,7 @@
   "tier": "development",
   "skillName": "verification-gate",
   "displayName": "Verification Gate",
-  "description": "変更が受け入れ可能かを判断するために、作業種別から必要な検証面を選び、リポジトリの専用 script や CI と同じコマンドを優先して実行し、成功、失敗、未検証範囲、次に必要な作業を残す。",
+  "description": "変更が受け入れ可能かを判断するために、受け入れ条件へ対応する検証面を選び、リポジトリの専用スクリプトや CI と同じコマンドを優先して実行する。成功、失敗原因、未検証範囲、次に必要な作業を残す。",
   "dependencies": [],
   "references": []
 }
