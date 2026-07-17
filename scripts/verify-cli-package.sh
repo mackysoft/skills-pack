@@ -59,24 +59,47 @@ while IFS= read -r skill_file; do
 done < <(find "${generated_skills_root}" -type f | sort)
 
 bundle_entry="tools/net10.0/any/skills/bundle.json"
-PACKAGE_PATH="${package_path}" BUNDLE_ENTRY="${bundle_entry}" python3 - <<'PY'
+expected_bundle_path="${generated_skills_root}/bundle.json"
+PACKAGE_PATH="${package_path}" BUNDLE_ENTRY="${bundle_entry}" EXPECTED_BUNDLE_PATH="${expected_bundle_path}" python3 - <<'PY'
 import json
 import os
+import re
 import sys
 import zipfile
 
 with zipfile.ZipFile(os.environ["PACKAGE_PATH"]) as package:
     bundle = json.loads(package.read(os.environ["BUNDLE_ENTRY"]))
 
-expected = {
-    "schemaVersion": 1,
-    "catalogId": "com.mackysoft.skills-pack",
-    "skillBundleVersion": 1,
-}
-actual = {key: bundle.get(key) for key in expected}
-if actual != expected or not bundle.get("bundleDigest"):
+with open(os.environ["EXPECTED_BUNDLE_PATH"], encoding="utf-8") as descriptor:
+    expected = json.load(descriptor)
+
+if not isinstance(expected, dict):
     print(
-        f"CLI package contains an invalid generated bundle descriptor. Expected: {expected} plus bundleDigest. Actual: {bundle}",
+        f"Repository contains an invalid generated bundle descriptor: {expected}",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+
+expected_version = expected.get("skillBundleVersion")
+expected_digest = expected.get("bundleDigest")
+if (
+    expected.get("schemaVersion") != 1
+    or expected.get("catalogId") != "com.mackysoft.skills-pack"
+    or isinstance(expected_version, bool)
+    or not isinstance(expected_version, int)
+    or expected_version < 1
+    or not isinstance(expected_digest, str)
+    or re.fullmatch(r"[0-9a-f]{64}", expected_digest) is None
+):
+    print(
+        f"Repository contains an invalid generated bundle descriptor: {expected}",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+
+if bundle != expected:
+    print(
+        f"CLI package bundle descriptor does not match the repository generated descriptor. Expected: {expected}. Actual: {bundle}",
         file=sys.stderr,
     )
     sys.exit(1)
@@ -163,12 +186,15 @@ if categories != ["basic", "development"] or skill_names != ["changelog"] or act
 PY
 
 dependency_skill_list="$("${tool_path}/skills-pack" skills list --skill pr-merge)"
-DEPENDENCY_SKILL_LIST_JSON="${dependency_skill_list}" python3 - <<'PY'
+DEPENDENCY_SKILL_LIST_JSON="${dependency_skill_list}" EXPECTED_BUNDLE_PATH="${expected_bundle_path}" python3 - <<'PY'
 import json
 import os
 import sys
 
 root = json.loads(os.environ["DEPENDENCY_SKILL_LIST_JSON"])
+with open(os.environ["EXPECTED_BUNDLE_PATH"], encoding="utf-8") as descriptor:
+    expected_bundle_version = json.load(descriptor)["skillBundleVersion"]
+
 payload = root.get("payload") or {}
 skill_names = payload.get("skillNames")
 skills = payload.get("skills", [])
@@ -199,9 +225,9 @@ if dependencies_by_skill.get("pr-merge") != ["pr-submit", "push", "sync-latest"]
         file=sys.stderr,
     )
     sys.exit(1)
-if any(skill.get("skillBundleVersion") != 1 for skill in skills):
+if any(skill.get("skillBundleVersion") != expected_bundle_version for skill in skills):
     print(
-        f"skills-pack skills list did not report skillBundleVersion 1 for dependency selection. Actual: {[skill.get('skillBundleVersion') for skill in skills]}",
+        f"skills-pack skills list did not report skillBundleVersion {expected_bundle_version} for dependency selection. Actual: {[skill.get('skillBundleVersion') for skill in skills]}",
         file=sys.stderr,
     )
     sys.exit(1)
