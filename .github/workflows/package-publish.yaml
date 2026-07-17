@@ -111,6 +111,11 @@ jobs:
           default-branch: ${{ github.event.repository.default_branch }}
           expected-release-sha: ${{ needs.prepare-release.outputs.release_sha }}
 
+      - name: Verify Agent Skills
+        uses: mackysoft/agent-skills/actions/verify@1.0.0
+        with:
+          root: skills
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v5
         with:
@@ -127,9 +132,6 @@ jobs:
 
       - name: Restore
         run: dotnet restore SkillsPack.slnx
-
-      - name: Verify generated skills
-        run: bash scripts/verify-skills.sh
 
       - name: Pack CLI tool
         run: >-

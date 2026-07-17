@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "skillBundleVersion": 1,
   "catalogId": "com.mackysoft.skills-pack",
-  "tier": "development",
+  "category": "development",
   "skillName": "issue-planner",
   "displayName": "Issue Planner",
   "description": "タスクや仕様からGitHub Issue構造を決める。Issue分割、親子Issue、Pull Request単位の粒度、依存関係を整理し、単一Issue、または親Issueと子Issueの1階層にまとめ、文書前提を含むIssue本文作成に必要な入力を作る作業で使う。",
@@ -10,7 +10,7 @@
     "writing"
   ],
   "contentDigest": "318fbe7ea3008c6e1498e408ab4dd91d40f8c51923a1edaffc1d8e44ee970153",
-  "manifestDigest": "e4051f0e0847b7453a9d96cea60c7a2c6965a257a4664ee5279608b5a6c4e169",
+  "manifestDigest": "b18fe2553b7ce49d0870ff41bc863a54105aa48e3f4f229c27c989fc3e38be5e",
   "hostArtifacts": [
     {
       "host": "claude",

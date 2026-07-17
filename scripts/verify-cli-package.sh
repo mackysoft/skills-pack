@@ -58,6 +58,30 @@ while IFS= read -r skill_file; do
   fi
 done < <(find "${generated_skills_root}" -type f | sort)
 
+bundle_entry="tools/net10.0/any/skills/bundle.json"
+PACKAGE_PATH="${package_path}" BUNDLE_ENTRY="${bundle_entry}" python3 - <<'PY'
+import json
+import os
+import sys
+import zipfile
+
+with zipfile.ZipFile(os.environ["PACKAGE_PATH"]) as package:
+    bundle = json.loads(package.read(os.environ["BUNDLE_ENTRY"]))
+
+expected = {
+    "schemaVersion": 1,
+    "catalogId": "com.mackysoft.skills-pack",
+    "skillBundleVersion": 1,
+}
+actual = {key: bundle.get(key) for key in expected}
+if actual != expected or not bundle.get("bundleDigest"):
+    print(
+        f"CLI package contains an invalid generated bundle descriptor. Expected: {expected} plus bundleDigest. Actual: {bundle}",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+PY
+
 skills_list="$("${tool_path}/skills-pack" skills list)"
 if ! grep -F '"command":"skills.list"' <<< "${skills_list}" >/dev/null; then
   echo "skills-pack skills list did not report the skills.list command." >&2
@@ -82,24 +106,37 @@ import sys
 root = json.loads(os.environ["SKILLS_LIST_JSON"])
 payload = root.get("payload") or {}
 skill_names = payload.get("skillNames")
+categories = payload.get("categories")
 if skill_names != []:
     print(
         f"skills-pack skills list did not report an empty skillNames selection for unfiltered list. Actual: {skill_names}",
         file=sys.stderr,
     )
     sys.exit(1)
+if categories != ["basic", "development"]:
+    print(
+        f"skills-pack skills list did not report every bundled category. Actual: {categories}",
+        file=sys.stderr,
+    )
+    sys.exit(1)
 actual = [
-    (tier.get("tier"), tier.get("skillCount"))
-    for tier in payload.get("availableTiers", [])
+    (category.get("category"), category.get("skillCount"))
+    for category in payload.get("availableCategories", [])
 ]
 expected = [
-    ("general", 1),
+    ("basic", 1),
     ("development", 19),
-    ("personal", 0),
 ]
 if actual != expected:
     print(
-        f"skills-pack skills list did not report expected availableTiers. Expected: {expected}. Actual: {actual}",
+        f"skills-pack skills list did not report expected availableCategories. Expected: {expected}. Actual: {actual}",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+hosts = [host.get("host") for host in payload.get("supportedHosts", [])]
+if hosts != ["claude", "copilot", "openai"]:
+    print(
+        f"skills-pack skills list did not serialize supported hosts as contract literals. Actual: {hosts}",
         file=sys.stderr,
     )
     sys.exit(1)
@@ -113,13 +150,13 @@ import sys
 
 root = json.loads(os.environ["SINGLE_SKILL_LIST_JSON"])
 payload = root.get("payload") or {}
-tiers = payload.get("tiers")
+categories = payload.get("categories")
 skill_names = payload.get("skillNames")
 skills = payload.get("skills", [])
 actual_names = [skill.get("skillName") for skill in skills]
-if tiers != ["general", "development", "personal"] or skill_names != ["changelog"] or actual_names != ["changelog", "writing"]:
+if categories != ["basic", "development"] or skill_names != ["changelog"] or actual_names != ["changelog", "writing"]:
     print(
-        f"skills-pack skills list did not support exact skill selection. Actual tiers: {tiers}. Actual skillNames: {skill_names}. Actual skills: {actual_names}",
+        f"skills-pack skills list did not support exact skill selection. Actual categories: {categories}. Actual skillNames: {skill_names}. Actual skills: {actual_names}",
         file=sys.stderr,
     )
     sys.exit(1)
@@ -170,26 +207,26 @@ if any(skill.get("skillBundleVersion") != 1 for skill in skills):
     sys.exit(1)
 PY
 
-multi_tier_list="$("${tool_path}/skills-pack" skills list --tier general,development)"
-MULTI_TIER_LIST_JSON="${multi_tier_list}" python3 - <<'PY'
+multi_category_list="$("${tool_path}/skills-pack" skills list --category basic,development)"
+MULTI_CATEGORY_LIST_JSON="${multi_category_list}" python3 - <<'PY'
 import json
 import os
 import sys
 
-root = json.loads(os.environ["MULTI_TIER_LIST_JSON"])
+root = json.loads(os.environ["MULTI_CATEGORY_LIST_JSON"])
 payload = root.get("payload") or {}
-tiers = payload.get("tiers")
+categories = payload.get("categories")
 skill_count = len(payload.get("skills", []))
-if tiers != ["general", "development"] or skill_count != 20:
+if categories != ["basic", "development"] or skill_count != 20:
     print(
-        f"skills-pack skills list did not support comma-separated tier selection. Expected tiers ['general', 'development'] with 20 skills. Actual tiers: {tiers}. Actual skill count: {skill_count}",
+        f"skills-pack skills list did not support comma-separated category selection. Expected categories ['basic', 'development'] with 20 skills. Actual categories: {categories}. Actual skill count: {skill_count}",
         file=sys.stderr,
     )
     sys.exit(1)
 PY
 
 export_path="${tool_path}/exported-skills"
-"${tool_path}/skills-pack" skills export --host openai --tier development --output "${export_path}" >/dev/null
+"${tool_path}/skills-pack" skills export --host openai --category development --output "${export_path}" >/dev/null
 if [[ ! -f "${export_path}/commit/SKILL.md" ]]; then
   echo "skills-pack skills export did not materialize commit/SKILL.md." >&2
   exit 1
@@ -232,8 +269,8 @@ if [[ -e "${dependency_skill_export_path}/review-triage" ]]; then
 fi
 
 install_repo="$(mktemp -d "${temp_root%/}/skills-pack-install.XXXXXX")"
-"${tool_path}/skills-pack" skills install --host openai --tier development --scope project --repo-root "${install_repo}" >/dev/null
-"${tool_path}/skills-pack" skills doctor --host openai --tier development --scope project --repo-root "${install_repo}" >/dev/null
+"${tool_path}/skills-pack" skills install --host openai --category development --scope project --repo-root "${install_repo}" >/dev/null
+"${tool_path}/skills-pack" skills doctor --host openai --category development --scope project --repo-root "${install_repo}" >/dev/null
 
 if ! diff -ruN "${export_path}" "${install_repo}/.agents/skills"; then
   echo "skills-pack install output differs from export output for the same host." >&2

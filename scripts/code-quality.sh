@@ -105,6 +105,11 @@ done
 solution="$(dotnet_resolve_solution "$solution_arg")"
 cd "$DOTNET_REPO_ROOT"
 
+if [ "${#include_paths[@]}" -eq 0 ]; then
+  # NOTE: Package-provided consumer source can be a Compile item, but its formatting belongs to the package repository.
+  include_paths=(src tests)
+fi
+
 diagnostics=(
   IDE0005
   IDE0011

@@ -1,159 +1,140 @@
 using System.Text.Json;
 using MackySoft.AgentSkills.Hosting.Commands;
-using MackySoft.AgentSkills.Hosts.Claude;
-using MackySoft.AgentSkills.Hosts.Copilot;
-using MackySoft.AgentSkills.Hosts.OpenAi;
-using MackySoft.AgentSkills.Hosts.Registration;
-using MackySoft.AgentSkills.OperationReports.Contracts;
+using MackySoft.AgentSkills.Shared.Text;
 using MackySoft.SkillsPack.Hosting.Cli.Common.Contracts;
 using MackySoft.SkillsPack.Hosting.Cli.Skills;
+using MackySoft.SkillsPack.Hosting.Composition.Features;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace SkillsPack.Tests.Hosting.Cli.Skills;
 
 public sealed class SkillsCommandResultFactoryTests
 {
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-    };
+    private static readonly JsonSerializerOptions JsonOptions = CreateJsonOptions();
 
     [Fact]
     [Trait("Size", "Small")]
-    public void Create_WithListReport_ProjectsSkillsPackListPayload ()
+    public async Task Create_WithListReport_ProjectsSkillsPackListPayload ()
     {
-        CommandResult result = SkillsCommandResultFactory.Create(
-            AgentSkillsCommandResult.Success(SkillsPackCommandNames.SkillsList, ListReport()),
-            HostAdapters());
+        using var serviceProvider = CreateServiceProvider();
+        var runner = serviceProvider.GetRequiredService<AgentSkillsCommandRunner>();
+        var agentSkillsResult = await runner.ListAsync(new AgentSkillsListCommandRequest(skill: ["commit"]));
+
+        CommandResult result = SkillsCommandResultFactory.Create(agentSkillsResult);
 
         Assert.Equal(SkillsPackCommandNames.SkillsList, result.Command);
         Assert.Equal(SkillsPackProtocol.StatusOk, result.Status);
         Assert.Equal((int)CliExitCode.Success, result.ExitCode);
 
         JsonElement payload = SerializePayload(result);
-        JsonElement skill = Assert.Single(payload.GetProperty("skills").EnumerateArray());
+        Assert.Equal(["basic", "development"], GetStrings(payload.GetProperty("categories")));
+        Assert.Equal(["commit"], GetStrings(payload.GetProperty("skillNames")));
+        Assert.Equal(
+            new[] { ("basic", 1), ("development", 19) },
+            payload.GetProperty("availableCategories")
+                .EnumerateArray()
+                .Select(static category => (
+                    category.GetProperty("category").GetString()!,
+                    category.GetProperty("skillCount").GetInt32()))
+                .ToArray());
+
+        JsonElement[] skills = payload.GetProperty("skills").EnumerateArray().ToArray();
+        Assert.Equal(["commit", "writing"], skills.Select(static skill => skill.GetProperty("skillName").GetString()!).ToArray());
+        JsonElement skill = skills[0];
         Assert.Equal("commit", skill.GetProperty("skillName").GetString());
+        Assert.Equal("development", skill.GetProperty("category").GetString());
         Assert.False(skill.TryGetProperty("catalogId", out _));
     }
 
     [Fact]
     [Trait("Size", "Small")]
-    public void Create_WithOperationReport_ProjectsOperationCounts ()
+    public async Task Create_WithProjectInstallReport_ProjectsCanonicalPathsAndCounts ()
     {
-        CommandResult result = SkillsCommandResultFactory.Create(
-            AgentSkillsCommandResult.Success(
-                SkillsPackCommandNames.SkillsInstall,
-                OperationReport(
-                    [
-                        Action("commit", "created", "changed"),
-                        Action("writing", "noOp", "unchanged"),
-                        Action("local-only", "blockedUnmanaged", "blocked", "unmanagedTarget"),
-                    ])),
-            HostAdapters());
+        var repositoryRoot = CreateTemporaryRepository("install-report");
+        try
+        {
+            using var serviceProvider = CreateServiceProvider();
+            var runner = serviceProvider.GetRequiredService<AgentSkillsCommandRunner>();
+            var agentSkillsResult = await runner.InstallAsync(new AgentSkillsInstallCommandRequest(
+                host: "openai",
+                skill: ["writing"],
+                scope: "project",
+                repositoryRoot: repositoryRoot,
+                dryRun: true));
 
-        Assert.Equal(SkillsPackCommandNames.SkillsInstall, result.Command);
-        Assert.Equal(SkillsPackProtocol.StatusOk, result.Status);
+            CommandResult result = SkillsCommandResultFactory.Create(agentSkillsResult);
 
-        JsonElement payload = SerializePayload(result);
-        Assert.Equal(1, payload.GetProperty("createdCount").GetInt32());
-        Assert.Equal(1, payload.GetProperty("noOpCount").GetInt32());
-        Assert.Equal(1, payload.GetProperty("blockedCount").GetInt32());
+            Assert.Equal(SkillsPackCommandNames.SkillsInstall, result.Command);
+            Assert.Equal(SkillsPackProtocol.StatusOk, result.Status);
+
+            JsonElement payload = SerializePayload(result);
+            Assert.Equal("openai", payload.GetProperty("host").GetString());
+            Assert.Equal("project", payload.GetProperty("scope").GetString());
+            Assert.Equal(Path.GetFullPath(repositoryRoot), payload.GetProperty("repositoryRoot").GetString());
+            Assert.Equal(
+                Path.Combine(Path.GetFullPath(repositoryRoot), ".agents", "skills"),
+                payload.GetProperty("targetRoot").GetString());
+            Assert.Equal(1, payload.GetProperty("createdCount").GetInt32());
+            Assert.Equal(0, payload.GetProperty("blockedCount").GetInt32());
+        }
+        finally
+        {
+            Directory.Delete(repositoryRoot, recursive: true);
+        }
     }
 
     [Fact]
     [Trait("Size", "Small")]
-    public void Create_WithDoctorErrorReport_ReturnsToolError ()
+    public async Task Create_WithDoctorErrorReport_ReturnsToolError ()
     {
-        CommandResult result = SkillsCommandResultFactory.Create(
-            AgentSkillsCommandResult.Success(
-                SkillsPackCommandNames.SkillsDoctor,
-                new SkillDoctorReport(
-                    "openai",
-                    ["general"],
-                    [],
-                    "project",
-                    "/repo/.codex/skills",
-                    IsHealthy: false,
-                    [
-                        new SkillDoctorDiagnosticReport(
-                            "error",
-                            "SKILL_TARGET_UNMANAGED",
-                            "Target is unmanaged.",
-                            "commit",
-                            "unmanaged"),
-                    ])),
-            HostAdapters());
+        var repositoryRoot = CreateTemporaryRepository("doctor-report");
+        try
+        {
+            var unmanagedSkillRoot = Path.Combine(repositoryRoot, ".agents", "skills", "writing");
+            Directory.CreateDirectory(unmanagedSkillRoot);
+            File.WriteAllText(Path.Combine(unmanagedSkillRoot, "SKILL.md"), "# Unmanaged\n");
 
-        Assert.Equal(SkillsPackProtocol.StatusError, result.Status);
-        Assert.Equal((int)CliExitCode.ToolError, result.ExitCode);
-        CommandError error = Assert.Single(result.Errors);
-        Assert.Equal("SKILL_TARGET_UNMANAGED", error.Code.Value);
-        Assert.Equal("commit", error.OpId);
+            using var serviceProvider = CreateServiceProvider();
+            var runner = serviceProvider.GetRequiredService<AgentSkillsCommandRunner>();
+            var agentSkillsResult = await runner.DoctorAsync(new AgentSkillsDoctorCommandRequest(
+                host: "openai",
+                skill: ["writing"],
+                scope: "project",
+                repositoryRoot: repositoryRoot));
+
+            CommandResult result = SkillsCommandResultFactory.Create(agentSkillsResult);
+
+            Assert.Equal(SkillsPackProtocol.StatusError, result.Status);
+            Assert.Equal((int)CliExitCode.ToolError, result.ExitCode);
+            CommandError error = Assert.Single(result.Errors);
+            Assert.Equal("SKILL_INSTALL_TARGET_UNMANAGED", error.Code.Value);
+            Assert.Equal("writing", error.OpId);
+
+            JsonElement payload = SerializePayload(result);
+            Assert.Equal(Path.GetFullPath(repositoryRoot), payload.GetProperty("repositoryRoot").GetString());
+            Assert.Equal("error", Assert.Single(payload.GetProperty("diagnostics").EnumerateArray()).GetProperty("severity").GetString());
+            Assert.False(string.IsNullOrWhiteSpace(payload.GetProperty("reloadGuidance").GetString()));
+        }
+        finally
+        {
+            Directory.Delete(repositoryRoot, recursive: true);
+        }
     }
 
-    private static SkillListReport ListReport ()
+    private static ServiceProvider CreateServiceProvider ()
     {
-        return new SkillListReport(
-            Tiers: ["general"],
-            SkillNames: [],
-            AvailableTiers: [new SkillListTierReport("general", 1)],
-            Skills:
-            [
-                new SkillListSkillReport(
-                    SchemaVersion: 1,
-                    SkillBundleVersion: 1,
-                    SkillName: "commit",
-                    DisplayName: "Commit",
-                    Description: "Create commits.",
-                    Dependencies: [],
-                    Tier: "general",
-                    CatalogId: SkillsPackSkillCatalogLiterals.Official,
-                    ContentDigest: "sha256:content",
-                    ManifestDigest: "sha256:manifest",
-                    HostArtifacts: []),
-            ],
-            SupportedHosts: []);
+        return new ServiceCollection()
+            .AddSkillsPackSkillServices()
+            .BuildServiceProvider();
     }
 
-    private static SkillOperationReport OperationReport (IReadOnlyList<SkillOperationActionReport> actions)
+    private static string CreateTemporaryRepository (string name)
     {
-        return new SkillOperationReport(
-            Host: "openai",
-            Tiers: ["general"],
-            SkillNames: [],
-            Scope: "project",
-            TargetRoot: "/repo/.codex/skills",
-            DryRun: false,
-            Force: false,
-            ReloadGuidance: "Reload the host.",
-            Actions: actions,
-            ActionCounts: [],
-            StatusCounts: []);
-    }
-
-    private static SkillOperationActionReport Action (
-        string skillName,
-        string action,
-        string status,
-        string? blockedReason = null)
-    {
-        return new SkillOperationActionReport(
-            SkillName: skillName,
-            Action: action,
-            Status: status,
-            BlockedReason: blockedReason,
-            TargetState: null,
-            FileChanges: null,
-            FileDiffs: []);
-    }
-
-    private static SkillHostAdapterSet HostAdapters ()
-    {
-        return new SkillHostAdapterSet(
-        [
-            new ClaudeSkillHostAdapter(),
-            new CopilotSkillHostAdapter(),
-            new OpenAiSkillHostAdapter(),
-        ]);
+        var repositoryRoot = Path.Combine(
+            AppContext.BaseDirectory,
+            $"skills-pack-{name}-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(repositoryRoot);
+        return repositoryRoot;
     }
 
     private static JsonElement SerializePayload (CommandResult result)
@@ -162,5 +143,22 @@ public sealed class SkillsCommandResultFactoryTests
             result.Payload,
             result.Payload.GetType(),
             JsonOptions);
+    }
+
+    private static string[] GetStrings (JsonElement element)
+    {
+        return element.EnumerateArray()
+            .Select(static item => item.GetString()!)
+            .ToArray();
+    }
+
+    private static JsonSerializerOptions CreateJsonOptions ()
+    {
+        var options = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        };
+        options.Converters.Add(new ContractLiteralJsonConverterFactory());
+        return options;
     }
 }

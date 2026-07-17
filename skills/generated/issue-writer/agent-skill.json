@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "skillBundleVersion": 1,
   "catalogId": "com.mackysoft.skills-pack",
-  "tier": "development",
+  "category": "development",
   "skillName": "issue-writer",
   "displayName": "Issue Writer",
   "description": "与えられたIssue構造、本文入力、文書前提に従ってGitHub Issue本文を作成、更新、点検する。Issue本文の項目、完了条件、依存関係、必要な検証、参照を整理し、必要なら `gh` で起票または本文更新まで進める作業で使う。",
@@ -10,7 +10,7 @@
     "writing"
   ],
   "contentDigest": "1ab92e165940ebbb195b2b1f25de193da18ffea7f7ec0dd76651530469ad3341",
-  "manifestDigest": "20ca173f54f7ccaaa4a1c2ac77c3726d03283a0cb59b1ac815d19a66943be682",
+  "manifestDigest": "b657fd7a907b87e7ac0cfa22e4883e202608b61b0e38095a9caeea2eab6a41cb",
   "hostArtifacts": [
     {
       "host": "claude",

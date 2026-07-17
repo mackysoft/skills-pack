@@ -11,7 +11,7 @@ public sealed class CommandFailureProjectorTests
     {
         var result = CommandFailureProjector.Create(
             "skills.install",
-            ApplicationFailure.InvalidInput("Invalid tier."));
+            ApplicationFailure.InvalidInput("Invalid category."));
 
         Assert.Equal(SkillsPackProtocol.StatusError, result.Status);
         Assert.Equal((int)CliExitCode.InvalidArgument, result.ExitCode);

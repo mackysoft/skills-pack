@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "skillBundleVersion": 1,
   "catalogId": "com.mackysoft.skills-pack",
-  "tier": "development",
+  "category": "development",
   "skillName": "test-authoring",
   "displayName": "Test Authoring",
   "description": "自動テストを新規作成、更新、見直すときに、契約の根拠、独自の検出価値、所有境界、代表ケース、観測範囲、実行境界を判断し、重複、役割を失ったテスト、実装詳細だけを固定するテストを統合または削除して最小のテスト集合にする。テスト実行や変更全体の検証だけが目的のときは使わない。",
@@ -10,7 +10,7 @@
     "code-authoring-rules"
   ],
   "contentDigest": "761fb101040c9fd9027a3fb6fcb9f771420805d52e28a2a20729aac1a7bf2224",
-  "manifestDigest": "7114aaaf8d217b2da9be0f4b5cf1b43a2520141d362f41860661361debc7ac3a",
+  "manifestDigest": "ad0e9c1ea2931996ddfaf492d3e11273d439fad3f1b15702611c71bb166cafba",
   "hostArtifacts": [
     {
       "host": "claude",
