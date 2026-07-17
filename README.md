@@ -62,7 +62,6 @@ SkillsPack includes these reusable skills:
 | `branch-create` | `development` | Create or reuse task branches with repository naming rules. |
 | `changelog` | `development` | Write reader-facing changelogs, release notes, and PR change summaries. |
 | `code-authoring-rules` | `development` | Apply language-independent code design and authoring rules. |
-| `code-quality-review` | `development` | Review code for duplication, low cohesion, excess state, and unnecessary abstraction. |
 | `commit` | `development` | Create responsibility-scoped Conventional Commit messages. |
 | `csharp-authoring-rules` | `development` | Apply C#-specific implementation and review judgment rules. |
 | `issue-planner` | `development` | Split tasks and specifications into single or parent-child GitHub Issue structures. |
