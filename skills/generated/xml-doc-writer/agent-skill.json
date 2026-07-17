@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "skillBundleVersion": 1,
   "catalogId": "com.mackysoft.skills-pack",
-  "tier": "development",
+  "category": "development",
   "skillName": "xml-doc-writer",
   "displayName": "XML Doc Writer",
   "description": "XMLドキュメントコメントを契約ベースで執筆・更新する。公開API、internal API、または重要な非公開APIの入力制約、戻り値保証、例外条件、非同期完了条件を明文化したいときに使う。曖昧語や命名の言い換えを避け、実装と整合する記述を作成する。",
@@ -10,7 +10,7 @@
     "writing"
   ],
   "contentDigest": "930cae74f5c291f58124e876656f7125de4224e690d4a88613305e53695e710b",
-  "manifestDigest": "11e857205443240558cea9e1f1a815283bcd0fccd68b6dd68a4a6ea8a904b96b",
+  "manifestDigest": "d7d0c319332d23f01e00d9ac2c8ff16504cf80642755e0f8d7494ce66254ae12",
   "hostArtifacts": [
     {
       "host": "claude",

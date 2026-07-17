@@ -15,8 +15,6 @@ internal static class SkillsPackSkillServiceCollectionExtensions
         services.AddAgentSkillsCommandRuntime(options =>
         {
             options.ProductName = "SkillsPack";
-            options.CatalogId = SkillsPackSkillCatalogLiterals.Official;
-            options.Tiers = SkillsPackSkillTierLiterals.Defined;
             options.PackageBaseDirectory = AppContext.BaseDirectory;
             options.CommandRoot = SkillsPackCommandNames.Skills;
         });

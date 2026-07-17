@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "displayName": "C# Authoring Rules",
+  "description": "C# のコードを実装、変更、レビューするときに、API 契約、例外、`null`、非同期処理、依存性注入、リソースの寿命、言語機能、XML ドキュメント、割り当てに関する C# 固有の判断規則を適用する。言語非依存の設計判断には $code-authoring-rules を併用する。",
+  "dependencies": [
+    "code-authoring-rules"
+  ]
+}

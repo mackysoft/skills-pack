@@ -29,13 +29,13 @@ List available skills and supported hosts:
 skills-pack skills list
 ```
 
-Install the development skill tier into the current repository:
+Install the development skill category into the current repository:
 
 ```bash
-skills-pack skills install --host openai --scope project --repo-root . --tier development
+skills-pack skills install --host openai --scope project --repo-root . --category development
 ```
 
-Install the general writing skill for the current user:
+Install the writing skill for the current user:
 
 ```bash
 skills-pack skills install --host openai --scope user --skill writing
@@ -44,20 +44,20 @@ skills-pack skills install --host openai --scope user --skill writing
 Preview changes before writing files:
 
 ```bash
-skills-pack skills install --host openai --scope project --repo-root . --tier development --dry-run --print-diff
+skills-pack skills install --host openai --scope project --repo-root . --category development --dry-run --print-diff
 ```
 
 Check installed project skills:
 
 ```bash
-skills-pack skills doctor --host openai --scope project --repo-root . --tier development
+skills-pack skills doctor --host openai --scope project --repo-root . --category development
 ```
 
 ## Included Skills
 
 SkillsPack includes these reusable skills:
 
-| Skill | Tier | Purpose |
+| Skill | Category | Purpose |
 | --- | --- | --- |
 | `branch-create` | `development` | Create or reuse task branches with repository naming rules. |
 | `changelog` | `development` | Write reader-facing changelogs, release notes, and PR change summaries. |
@@ -77,96 +77,92 @@ SkillsPack includes these reusable skills:
 | `ultra-review` | `development` | Run deeper multi-pass review and apply safe fixes. |
 | `unity-authoring-rules` | `development` | Apply Unity-specific implementation and review judgment rules with C# rules. |
 | `verification-gate` | `development` | Run the verification needed before PRs or final checks. |
-| `writing` | `general` | Write, revise, review, summarize, and localize natural-language text while preserving meaning and structure. |
+| `writing` | `basic` | Write, revise, review, summarize, and localize natural-language text while preserving meaning and structure. |
 | `xml-doc-writer` | `development` | Write contract-focused XML documentation comments. |
 
-## Tiers
+## Categories
 
-SkillsPack defines these tiers:
+SkillsPack includes these categories:
 
-| Tier | Purpose |
+| Category | Purpose |
 | --- | --- |
-| `general` | General-purpose reusable skills. |
+| `basic` | Foundational reusable skills. |
 | `development` | Code, review, test, Git, and pull request workflow skills. |
-| `personal` | Skills for my personal environment and workflow setup. |
-
-Empty tiers are valid.
-They are still reported by `skills-pack skills list` so automation can discover the full supported tier set.
 
 ## Skill Selection
 
-`--tier` selects one or more skill tiers.
+`--category` selects one or more bundled skill categories.
 `--skill` selects exact `skillName` values.
 Selectors accept comma-separated values:
 
 ```bash
-skills-pack skills install --host openai --scope project --repo-root . --tier general,development
+skills-pack skills install --host openai --scope project --repo-root . --category basic,development
 skills-pack skills install --host openai --scope project --repo-root . --skill changelog,commit
 ```
 
 `skills list` can run without selectors.
-For `export`, `install`, `update`, `doctor`, and `uninstall`, at least one package selector is required: `--tier` or `--skill`.
+For `export`, `install`, `update`, `doctor`, and `uninstall`, at least one package selector is required: `--category` or `--skill`.
 
-When both `--tier` and `--skill` are specified, selected skills must match the selected tiers.
+When both `--category` and `--skill` are specified, selected skills must match the selected categories.
 Exact skill selections also include transitive dependencies declared by the selected skills.
 For example, selecting `pr-merge` also exports or installs the Git and PR workflow skills it invokes.
 
 ## Command Reference
 
-List bundled skills, supported hosts, tiers, and package counts:
+List bundled skills, supported hosts, categories, and package counts:
 
 ```bash
 skills-pack skills list
-skills-pack skills list --tier development
-skills-pack skills list --tier general,development
+skills-pack skills list --category development
+skills-pack skills list --category basic,development
 skills-pack skills list --skill changelog
-skills-pack skills list --tier development --skill changelog
+skills-pack skills list --category development --skill changelog
 ```
 
 Export host-specific skill files:
 
 ```bash
-skills-pack skills export --host openai --tier development --output ./exported-skills
+skills-pack skills export --host openai --category development --output ./exported-skills
 skills-pack skills export --host openai --skill changelog --output ./exported-skills
 ```
 
 Install skills into a repository:
 
 ```bash
-skills-pack skills install --host openai --scope project --repo-root . --tier development
+skills-pack skills install --host openai --scope project --repo-root . --category development
 skills-pack skills install --host openai --scope project --repo-root . --skill changelog
 ```
 
 Update installed skills:
 
 ```bash
-skills-pack skills update --host openai --scope project --repo-root . --tier development
+skills-pack skills update --host openai --scope project --repo-root . --category development
 ```
 
 Diagnose installed skills:
 
 ```bash
-skills-pack skills doctor --host openai --scope project --repo-root . --tier development
+skills-pack skills doctor --host openai --scope project --repo-root . --category development
 ```
 
 Uninstall managed skills:
 
 ```bash
-skills-pack skills uninstall --host openai --scope project --repo-root . --tier development
+skills-pack skills uninstall --host openai --scope project --repo-root . --category development
 ```
 
 Install skills into the current user's host skill directory:
 
 ```bash
-skills-pack skills install --host openai --scope user --tier development
+skills-pack skills install --host openai --scope user --category development
 skills-pack skills install --host openai --scope user --skill writing
 ```
 
 Use `--dry-run` before changing installed files:
 
 ```bash
-skills-pack skills install --host openai --scope project --repo-root . --tier development --dry-run --print-diff
-skills-pack skills doctor --host openai --scope project --repo-root . --tier development
+skills-pack skills install --host openai --scope project --repo-root . --category development --dry-run --print-diff
+skills-pack skills doctor --host openai --scope project --repo-root . --category development
 ```
 
 Supported hosts are reported by `skills-pack skills list`.

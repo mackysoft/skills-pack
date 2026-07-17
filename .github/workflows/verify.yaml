@@ -9,17 +9,109 @@ on:
     branches:
       - master
   workflow_dispatch:
+    inputs:
+      expected_sha:
+        description: Commit SHA that a synchronizing workflow expects this run to verify.
+        required: false
+        type: string
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: ${{ github.event_name != 'workflow_dispatch' }}
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
 
 permissions:
   contents: read
 
 jobs:
+  source:
+    name: synchronized source
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Guard synchronized commit
+        env:
+          ACTUAL_SHA: ${{ github.sha }}
+          EXPECTED_SHA: ${{ inputs.expected_sha }}
+        run: |
+          if [[ -n "${EXPECTED_SHA}" && "${ACTUAL_SHA}" != "${EXPECTED_SHA}" ]]; then
+            echo "Expected synchronized commit ${EXPECTED_SHA}, but workflow_dispatch resolved ${ACTUAL_SHA}." >&2
+            exit 1
+          fi
+
+  skills:
+    name: agent skills
+    needs: source
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Verify Agent Skills
+        uses: mackysoft/agent-skills/actions/verify@1.0.0
+        with:
+          root: skills
+
   dotnet:
-    name: dotnet
+    name: dotnet (${{ matrix.os }})
+    needs: source
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v5
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('SkillsPack.slnx', '**/*.csproj', '.config/dotnet-tools.json') }}
+
+      - name: Restore
+        run: dotnet restore "$DOTNET_SOLUTION"
+
+      - name: Verify code
+        run: >-
+          bash scripts/verify.sh
+          --no-restore
+          --solution "$DOTNET_SOLUTION"
+          --configuration Release
+          --
+          --logger "trx;LogFileName=${{ matrix.os }}.trx"
+          --results-directory "artifacts/test-results/${{ matrix.os }}"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: dotnet-test-results-${{ matrix.os }}
+          path: artifacts/test-results/${{ matrix.os }}
+          if-no-files-found: warn
+
+  package:
+    name: package
+    needs:
+      - skills
+      - dotnet
     runs-on: ubuntu-latest
 
     defaults:
@@ -39,20 +131,10 @@ jobs:
         uses: actions/cache@v5
         with:
           path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('SkillsPack.slnx', '**/*.csproj') }}
+          key: ${{ runner.os }}-nuget-${{ hashFiles('SkillsPack.slnx', '**/*.csproj', '.config/dotnet-tools.json') }}
 
       - name: Restore
         run: dotnet restore "$DOTNET_SOLUTION"
-
-      - name: Verify code
-        run: >-
-          bash scripts/verify.sh
-          --no-restore
-          --solution "$DOTNET_SOLUTION"
-          --configuration Release
-          --
-          --logger "trx;LogFileName=ubuntu.trx"
-          --results-directory "artifacts/test-results/ubuntu"
 
       - name: Pack CLI tool
         run: >-
@@ -64,32 +146,34 @@ jobs:
       - name: Smoke test CLI tool package
         run: bash scripts/verify-cli-package.sh artifacts/packages 0.0.0
 
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: dotnet-test-results-ubuntu
-          path: artifacts/test-results/ubuntu
-          if-no-files-found: warn
-
   required:
     name: required
     runs-on: ubuntu-latest
     needs:
+      - source
+      - skills
       - dotnet
+      - package
     if: always()
 
     steps:
       - name: Evaluate required jobs
         shell: bash
         env:
+          SOURCE_RESULT: ${{ needs.source.result }}
+          SKILLS_RESULT: ${{ needs.skills.result }}
           DOTNET_RESULT: ${{ needs.dotnet.result }}
+          PACKAGE_RESULT: ${{ needs.package.result }}
         run: |
           set -euo pipefail
 
-          if [[ "${DOTNET_RESULT}" != "success" ]]; then
-            echo "dotnet job is required but finished with ${DOTNET_RESULT}." >&2
-            exit 1
-          fi
+          for job in SOURCE SKILLS DOTNET PACKAGE; do
+            result_variable="${job}_RESULT"
+            result="${!result_variable}"
+            if [[ "${result}" != "success" ]]; then
+              echo "${job,,} job is required but finished with ${result}." >&2
+              exit 1
+            fi
+          done
 
           echo "All required verification jobs completed successfully."

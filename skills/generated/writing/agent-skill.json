@@ -2,13 +2,13 @@
   "schemaVersion": 1,
   "skillBundleVersion": 1,
   "catalogId": "com.mackysoft.skills-pack",
-  "tier": "general",
+  "category": "basic",
   "skillName": "writing",
   "displayName": "Writing",
   "description": "自然言語の文章を作成、変更、レビュー、要約、翻訳、ローカライズ、返信するときに、対象、読者、媒体、言語、出力形式を文章前提として固定し、意味保持、事実性、論理構造、文章構造、文体、表記を整える。会話、スレッド、コメント、メール、案内、告知、提案、報告、説明文、記事、原稿、専門文書などの文章成果物や、やりとりの読みやすさを改善したいときに使う。",
   "dependencies": [],
   "contentDigest": "49629c4e3c8aa0e041b8937d10dc10bdeb1b27c4ca86e24a914d083b08f17c5d",
-  "manifestDigest": "45ddc7b4f527596ee27d49eed5af5b761cc1c5f854b5c3de08bff95cdc21cc03",
+  "manifestDigest": "bea117bade3fe39fe923a4971a1cff2945e2f4016a2cd919815e38ee8ab7069b",
   "hostArtifacts": [
     {
       "host": "claude",
