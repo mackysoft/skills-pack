@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "skillBundleVersion": 1,
+  "catalogId": "com.mackysoft.skills-pack",
+  "tier": "development",
+  "skillName": "skill-authoring",
+  "displayName": "Skill Authoring",
+  "description": "エージェントスキルを新規作成、更新、レビューするときに、必要性、単一責務、発火条件、判断規則、作業の流れ、自由度、参照資源を設計し、実際の利用文脈で意図した判断と成果へ到達できるスキルに仕上げる。スキル本文の執筆、責務分割、description の改善、挙動検証で使う。",
+  "dependencies": [
+    "writing"
+  ],
+  "references": []
+}
