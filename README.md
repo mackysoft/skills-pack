@@ -70,6 +70,8 @@ SkillsPack includes these reusable skills:
 | `pr-merge` | `development` | Merge pull requests through CI and branch cleanup. |
 | `push` | `development` | Commit pending work when needed and push the current branch safely. |
 | `review-triage` | `development` | Triage review comments against code, specifications, and evidence. |
+| `skill-authoring` | `development` | Create, update, and review behaviorally effective agent skills. |
+| `skill-usage-analysis` | `development` | Analyze real agent usage and identify evidence-backed skill improvements. |
 | `sync-latest` | `development` | Fetch origin and safely synchronize the current branch with the right base. |
 | `test-authoring` | `development` | Design, update, and consolidate minimal contract-based test suites. |
 | `ultra-review` | `development` | Run deeper multi-pass review and apply safe fixes. |

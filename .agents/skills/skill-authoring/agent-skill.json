@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "skillBundleVersion": 1,
+  "catalogId": "com.mackysoft.skills-pack",
+  "tier": "development",
+  "skillName": "skill-authoring",
+  "displayName": "Skill Authoring",
+  "description": "エージェントスキルを新規作成、更新、レビューするときに、必要性、単一責務、発火条件、判断規則、作業の流れ、自由度、補助ファイルを設計し、実際の利用文脈で意図した判断と成果へ到達できるスキルに仕上げる。スキル本文の執筆、責務分割、description の改善、挙動検証で使う。",
+  "dependencies": [
+    "writing"
+  ],
+  "contentDigest": "40276ca4f5236dcb8aa047ab389a84a8a65236396223c998db5d04ec3579176c",
+  "manifestDigest": "b9201b4217c28dd398e0f2f653999a55f94f1c45a0d65caa20008eef291c5a00",
+  "hostArtifacts": [
+    {
+      "host": "claude",
+      "materializedFrontmatterDigest": "eb6d275d2d712470ea70c9cffb1843e40152d46f5fc3dabc431d03ecec076974"
+    },
+    {
+      "host": "copilot",
+      "materializedFrontmatterDigest": "d6ff587cd915999fac6542f9c4dc37709e9591033cb8e12b9439ed25ca2611b5"
+    },
+    {
+      "host": "openai",
+      "path": "agents/openai.yaml",
+      "digest": "28185ab149694d5fa8a4768342517b07a735cb38dc3f7025cf1f9bcbf49bb855",
+      "materializedFrontmatterDigest": "bbfa40f7969a3fe93e123d5d2da20bc4b74ea44344d9f750ba1aa32e88649f7e"
+    }
+  ]
+}
