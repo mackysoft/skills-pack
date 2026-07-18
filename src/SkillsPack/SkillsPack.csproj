@@ -21,11 +21,11 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="MackySoft.AgentSkills" Version="1.0.0" />
-    <PackageReference Include="MackySoft.AgentSkills.ConsoleAppFramework" Version="1.0.0">
+    <PackageReference Include="MackySoft.AgentSkills" Version="2.0.0" />
+    <PackageReference Include="MackySoft.AgentSkills.ConsoleAppFramework" Version="2.0.0">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="MackySoft.AgentSkills.Hosting" Version="1.0.0" />
+    <PackageReference Include="MackySoft.AgentSkills.Hosting" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.3" />
   </ItemGroup>
 
