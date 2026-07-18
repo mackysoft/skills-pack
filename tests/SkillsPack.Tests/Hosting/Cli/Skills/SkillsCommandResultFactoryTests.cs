@@ -72,7 +72,7 @@ public sealed class SkillsCommandResultFactoryTests
             Assert.Equal("project", payload.GetProperty("scope").GetString());
             Assert.Equal(Path.GetFullPath(repositoryRoot), payload.GetProperty("repositoryRoot").GetString());
             Assert.Equal(
-                Path.Combine(Path.GetFullPath(repositoryRoot), ".agents", "skills"),
+                Path.Combine(Path.GetFullPath(repositoryRoot), ".agents", "skills", "com.mackysoft.skills-pack"),
                 payload.GetProperty("targetRoot").GetString());
             Assert.Equal(1, payload.GetProperty("createdCount").GetInt32());
             Assert.Equal(0, payload.GetProperty("blockedCount").GetInt32());

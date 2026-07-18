@@ -298,7 +298,7 @@ install_repo="$(mktemp -d "${temp_root%/}/skills-pack-install.XXXXXX")"
 "${tool_path}/skills-pack" skills install --host openai --category development --scope project --repo-root "${install_repo}" >/dev/null
 "${tool_path}/skills-pack" skills doctor --host openai --category development --scope project --repo-root "${install_repo}" >/dev/null
 
-if ! diff -ruN "${export_path}" "${install_repo}/.agents/skills"; then
+if ! diff -ruN "${export_path}" "${install_repo}/.agents/skills/com.mackysoft.skills-pack"; then
   echo "skills-pack install output differs from export output for the same host." >&2
   exit 1
 fi
