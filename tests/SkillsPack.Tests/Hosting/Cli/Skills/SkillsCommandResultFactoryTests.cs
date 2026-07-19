@@ -30,7 +30,7 @@ public sealed class SkillsCommandResultFactoryTests
         Assert.Equal(["basic", "development"], GetStrings(payload.GetProperty("categories")));
         Assert.Equal(["commit"], GetStrings(payload.GetProperty("skillNames")));
         Assert.Equal(
-            new[] { ("basic", 1), ("development", 19) },
+            new[] { ("basic", 2), ("development", 19) },
             payload.GetProperty("availableCategories")
                 .EnumerateArray()
                 .Select(static category => (
@@ -39,7 +39,7 @@ public sealed class SkillsCommandResultFactoryTests
                 .ToArray());
 
         JsonElement[] skills = payload.GetProperty("skills").EnumerateArray().ToArray();
-        Assert.Equal(["commit", "writing"], skills.Select(static skill => skill.GetProperty("skillName").GetString()!).ToArray());
+        Assert.Equal(["commit", "referent-modeling", "writing"], skills.Select(static skill => skill.GetProperty("skillName").GetString()!).ToArray());
         JsonElement skill = skills[0];
         Assert.Equal("commit", skill.GetProperty("skillName").GetString());
         Assert.Equal("development", skill.GetProperty("category").GetString());
@@ -74,7 +74,7 @@ public sealed class SkillsCommandResultFactoryTests
             Assert.Equal(
                 Path.Combine(Path.GetFullPath(repositoryRoot), ".agents", "skills", "com.mackysoft.skills-pack"),
                 payload.GetProperty("targetRoot").GetString());
-            Assert.Equal(1, payload.GetProperty("createdCount").GetInt32());
+            Assert.Equal(2, payload.GetProperty("createdCount").GetInt32());
             Assert.Equal(0, payload.GetProperty("blockedCount").GetInt32());
         }
         finally
@@ -90,7 +90,7 @@ public sealed class SkillsCommandResultFactoryTests
         var repositoryRoot = CreateTemporaryRepository("doctor-report");
         try
         {
-            var unmanagedSkillRoot = Path.Combine(repositoryRoot, ".agents", "skills", "writing");
+            var unmanagedSkillRoot = Path.Combine(repositoryRoot, ".agents", "skills", "referent-modeling");
             Directory.CreateDirectory(unmanagedSkillRoot);
             File.WriteAllText(Path.Combine(unmanagedSkillRoot, "SKILL.md"), "# Unmanaged\n");
 
@@ -98,7 +98,7 @@ public sealed class SkillsCommandResultFactoryTests
             var runner = serviceProvider.GetRequiredService<AgentSkillsCommandRunner>();
             var agentSkillsResult = await runner.DoctorAsync(new AgentSkillsDoctorCommandRequest(
                 host: "openai",
-                skill: ["writing"],
+                skill: ["referent-modeling"],
                 scope: "project",
                 repositoryRoot: repositoryRoot));
 
@@ -108,7 +108,7 @@ public sealed class SkillsCommandResultFactoryTests
             Assert.Equal((int)CliExitCode.ToolError, result.ExitCode);
             CommandError error = Assert.Single(result.Errors);
             Assert.Equal("SKILL_INSTALL_TARGET_UNMANAGED", error.Code.Value);
-            Assert.Equal("writing", error.OpId);
+            Assert.Equal("referent-modeling", error.OpId);
 
             JsonElement payload = SerializePayload(result);
             Assert.Equal(Path.GetFullPath(repositoryRoot), payload.GetProperty("repositoryRoot").GetString());

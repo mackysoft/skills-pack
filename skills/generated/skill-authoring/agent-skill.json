@@ -7,10 +7,11 @@
   "displayName": "Skill Authoring",
   "description": "エージェントスキルを新規作成、更新、レビューするときに、必要性、単一責務、発火条件、判断規則、作業の流れ、自由度、補助ファイルを設計し、実際の利用文脈で意図した判断と成果へ到達できるスキルに仕上げる。スキル本文の執筆、責務分割、description の改善、挙動検証で使う。",
   "dependencies": [
+    "referent-modeling",
     "writing"
   ],
-  "contentDigest": "5f263c60712ea00e3bfb49c1f39aff1e0971032ef178c5b794f3cf917f1e94df",
-  "manifestDigest": "d02d6b48a783ff8b1c03396ac9ed03adef4ce407e475180aaa5d0d4a700c14ab",
+  "contentDigest": "959032ac677f08d274bb29f30e8afe19050866e25f80fcfa72ee5df074b66089",
+  "manifestDigest": "a3e1e1b7010b413904862cebc068b9d087ba430abac2d0aa390b13ce1272fc38",
   "hostArtifacts": [
     {
       "host": "claude",

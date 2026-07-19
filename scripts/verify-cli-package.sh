@@ -147,7 +147,7 @@ actual = [
     for category in payload.get("availableCategories", [])
 ]
 expected = [
-    ("basic", 1),
+    ("basic", 2),
     ("development", 19),
 ]
 if actual != expected:
@@ -177,7 +177,7 @@ categories = payload.get("categories")
 skill_names = payload.get("skillNames")
 skills = payload.get("skills", [])
 actual_names = [skill.get("skillName") for skill in skills]
-if categories != ["basic", "development"] or skill_names != ["changelog"] or actual_names != ["changelog", "writing"]:
+if categories != ["basic", "development"] or skill_names != ["changelog"] or actual_names != ["changelog", "referent-modeling", "writing"]:
     print(
         f"skills-pack skills list did not support exact skill selection. Actual categories: {categories}. Actual skillNames: {skill_names}. Actual skills: {actual_names}",
         file=sys.stderr,
@@ -205,6 +205,7 @@ expected_names = [
     "pr-merge",
     "pr-submit",
     "push",
+    "referent-modeling",
     "sync-latest",
     "verification-gate",
     "writing",
@@ -243,9 +244,9 @@ root = json.loads(os.environ["MULTI_CATEGORY_LIST_JSON"])
 payload = root.get("payload") or {}
 categories = payload.get("categories")
 skill_count = len(payload.get("skills", []))
-if categories != ["basic", "development"] or skill_count != 20:
+if categories != ["basic", "development"] or skill_count != 21:
     print(
-        f"skills-pack skills list did not support comma-separated category selection. Expected categories ['basic', 'development'] with 20 skills. Actual categories: {categories}. Actual skill count: {skill_count}",
+        f"skills-pack skills list did not support comma-separated category selection. Expected categories ['basic', 'development'] with 21 skills. Actual categories: {categories}. Actual skill count: {skill_count}",
         file=sys.stderr,
     )
     sys.exit(1)
@@ -280,9 +281,14 @@ if [[ ! -f "${single_skill_export_path}/writing/SKILL.md" ]]; then
   exit 1
 fi
 
+if [[ ! -f "${single_skill_export_path}/referent-modeling/SKILL.md" ]]; then
+  echo "skills-pack skills export did not materialize transitive dependency skill referent-modeling/SKILL.md for exact skill selection." >&2
+  exit 1
+fi
+
 dependency_skill_export_path="${tool_path}/exported-dependency-skill"
 "${tool_path}/skills-pack" skills export --host openai --skill pr-merge --output "${dependency_skill_export_path}" >/dev/null
-for expected_skill in changelog commit pr-merge pr-submit push sync-latest verification-gate writing; do
+for expected_skill in changelog commit pr-merge pr-submit push referent-modeling sync-latest verification-gate writing; do
   if [[ ! -f "${dependency_skill_export_path}/${expected_skill}/SKILL.md" ]]; then
     echo "skills-pack skills export did not materialize dependency skill ${expected_skill}/SKILL.md for exact skill selection." >&2
     exit 1
