@@ -5,26 +5,26 @@
   "category": "development",
   "skillName": "skill-authoring",
   "displayName": "Skill Authoring",
-  "description": "エージェントスキルを新規作成、更新、レビューするときに、必要性、単一責務、発火条件、判断規則、作業の流れ、自由度、補助ファイルを設計し、実際の利用文脈で意図した判断と成果へ到達できるスキルに仕上げる。スキル本文の執筆、責務分割、description の改善、挙動検証で使う。",
+  "description": "エージェントスキルを新規作成、更新、レビューするときに、必要性、単一責務、発火面、判断規則、自由度、フロー、スキル間の構成、本文と補助ファイルの情報配置を評価し、実際の利用文脈で意図した判断と成果へ到達できる作業契約に仕上げる。スキル本文の執筆、責務の分割、description と依存関係の設計、構造と挙動の検証で使う。",
   "dependencies": [
     "writing"
   ],
-  "contentDigest": "5f263c60712ea00e3bfb49c1f39aff1e0971032ef178c5b794f3cf917f1e94df",
-  "manifestDigest": "d02d6b48a783ff8b1c03396ac9ed03adef4ce407e475180aaa5d0d4a700c14ab",
+  "contentDigest": "c0862ec506ec28d4b756f43966e23a81532b3c8c960f6caf4a108bd401444a7e",
+  "manifestDigest": "86e24097c7c6f0e178b3d16960428ef7269eba8c01680a670d34bde2f858e41d",
   "hostArtifacts": [
     {
       "host": "claude",
-      "materializedFrontmatterDigest": "eb6d275d2d712470ea70c9cffb1843e40152d46f5fc3dabc431d03ecec076974"
+      "materializedFrontmatterDigest": "00a1a0f38743821d47ac0ccc4788b9fb6accfa122e803ca5381bc3bf2c82e364"
     },
     {
       "host": "copilot",
-      "materializedFrontmatterDigest": "d6ff587cd915999fac6542f9c4dc37709e9591033cb8e12b9439ed25ca2611b5"
+      "materializedFrontmatterDigest": "16a231f36d88dbd5055096bcd2b1328c30e1b71799272fe99676787c96de5002"
     },
     {
       "host": "openai",
       "path": "agents/openai.yaml",
-      "digest": "28185ab149694d5fa8a4768342517b07a735cb38dc3f7025cf1f9bcbf49bb855",
-      "materializedFrontmatterDigest": "bbfa40f7969a3fe93e123d5d2da20bc4b74ea44344d9f750ba1aa32e88649f7e"
+      "digest": "cf777e7792a3bba55c60e880126f1a98aa7059a25c6bcc0a2b3bb5a0a2070642",
+      "materializedFrontmatterDigest": "3cc4819de519db389e4fc716d3943aef9dc98b5ac0f4a3e36cbbefa48fcc3399"
     }
   ]
 }
