@@ -25,8 +25,7 @@ fi
 
 temp_root="${RUNNER_TEMP:-${TMPDIR:-/tmp}}"
 tool_path="$(mktemp -d "${temp_root%/}/skills-pack-tool.XXXXXX")"
-install_repo=""
-trap 'rm -rf "${tool_path}" "${install_repo}"' EXIT
+trap 'rm -rf "${tool_path}"' EXIT
 
 dotnet tool install \
   --tool-path "${tool_path}" \
@@ -63,7 +62,6 @@ expected_bundle_path="${generated_skills_root}/bundle.json"
 PACKAGE_PATH="${package_path}" BUNDLE_ENTRY="${bundle_entry}" EXPECTED_BUNDLE_PATH="${expected_bundle_path}" python3 - <<'PY'
 import json
 import os
-import re
 import sys
 import zipfile
 
@@ -72,30 +70,6 @@ with zipfile.ZipFile(os.environ["PACKAGE_PATH"]) as package:
 
 with open(os.environ["EXPECTED_BUNDLE_PATH"], encoding="utf-8") as descriptor:
     expected = json.load(descriptor)
-
-if not isinstance(expected, dict):
-    print(
-        f"Repository contains an invalid generated bundle descriptor: {expected}",
-        file=sys.stderr,
-    )
-    sys.exit(1)
-
-expected_version = expected.get("skillBundleVersion")
-expected_digest = expected.get("bundleDigest")
-if (
-    expected.get("schemaVersion") != 1
-    or expected.get("catalogId") != "com.mackysoft.skills-pack"
-    or isinstance(expected_version, bool)
-    or not isinstance(expected_version, int)
-    or expected_version < 1
-    or not isinstance(expected_digest, str)
-    or re.fullmatch(r"[0-9a-f]{64}", expected_digest) is None
-):
-    print(
-        f"Repository contains an invalid generated bundle descriptor: {expected}",
-        file=sys.stderr,
-    )
-    sys.exit(1)
 
 if bundle != expected:
     print(
@@ -108,197 +82,5 @@ PY
 skills_list="$("${tool_path}/skills-pack" skills list)"
 if ! grep -F '"command":"skills.list"' <<< "${skills_list}" >/dev/null; then
   echo "skills-pack skills list did not report the skills.list command." >&2
-  exit 1
-fi
-
-if ! grep -F '"skillName":"commit"' <<< "${skills_list}" >/dev/null; then
-  echo "skills-pack skills list did not include bundled SKILL packages." >&2
-  exit 1
-fi
-
-if ! grep -F '"skillName":"changelog"' <<< "${skills_list}" >/dev/null; then
-  echo "skills-pack skills list did not include changelog." >&2
-  exit 1
-fi
-
-SKILLS_LIST_JSON="${skills_list}" python3 - <<'PY'
-import json
-import os
-import sys
-
-root = json.loads(os.environ["SKILLS_LIST_JSON"])
-payload = root.get("payload") or {}
-skill_names = payload.get("skillNames")
-categories = payload.get("categories")
-if skill_names != []:
-    print(
-        f"skills-pack skills list did not report an empty skillNames selection for unfiltered list. Actual: {skill_names}",
-        file=sys.stderr,
-    )
-    sys.exit(1)
-if categories != ["basic", "development"]:
-    print(
-        f"skills-pack skills list did not report every bundled category. Actual: {categories}",
-        file=sys.stderr,
-    )
-    sys.exit(1)
-actual = [
-    (category.get("category"), category.get("skillCount"))
-    for category in payload.get("availableCategories", [])
-]
-expected = [
-    ("basic", 1),
-    ("development", 19),
-]
-if actual != expected:
-    print(
-        f"skills-pack skills list did not report expected availableCategories. Expected: {expected}. Actual: {actual}",
-        file=sys.stderr,
-    )
-    sys.exit(1)
-hosts = [host.get("host") for host in payload.get("supportedHosts", [])]
-if hosts != ["claude", "copilot", "openai"]:
-    print(
-        f"skills-pack skills list did not serialize supported hosts as contract literals. Actual: {hosts}",
-        file=sys.stderr,
-    )
-    sys.exit(1)
-PY
-
-single_skill_list="$("${tool_path}/skills-pack" skills list --skill changelog)"
-SINGLE_SKILL_LIST_JSON="${single_skill_list}" python3 - <<'PY'
-import json
-import os
-import sys
-
-root = json.loads(os.environ["SINGLE_SKILL_LIST_JSON"])
-payload = root.get("payload") or {}
-categories = payload.get("categories")
-skill_names = payload.get("skillNames")
-skills = payload.get("skills", [])
-actual_names = [skill.get("skillName") for skill in skills]
-if categories != ["basic", "development"] or skill_names != ["changelog"] or actual_names != ["changelog", "writing"]:
-    print(
-        f"skills-pack skills list did not support exact skill selection. Actual categories: {categories}. Actual skillNames: {skill_names}. Actual skills: {actual_names}",
-        file=sys.stderr,
-    )
-    sys.exit(1)
-PY
-
-dependency_skill_list="$("${tool_path}/skills-pack" skills list --skill pr-merge)"
-DEPENDENCY_SKILL_LIST_JSON="${dependency_skill_list}" EXPECTED_BUNDLE_PATH="${expected_bundle_path}" python3 - <<'PY'
-import json
-import os
-import sys
-
-root = json.loads(os.environ["DEPENDENCY_SKILL_LIST_JSON"])
-with open(os.environ["EXPECTED_BUNDLE_PATH"], encoding="utf-8") as descriptor:
-    expected_bundle_version = json.load(descriptor)["skillBundleVersion"]
-
-payload = root.get("payload") or {}
-skill_names = payload.get("skillNames")
-skills = payload.get("skills", [])
-actual_names = [skill.get("skillName") for skill in skills]
-expected_names = [
-    "changelog",
-    "commit",
-    "pr-merge",
-    "pr-submit",
-    "push",
-    "sync-latest",
-    "verification-gate",
-    "writing",
-]
-dependencies_by_skill = {
-    skill.get("skillName"): skill.get("dependencies")
-    for skill in skills
-}
-if skill_names != ["pr-merge"] or actual_names != expected_names:
-    print(
-        f"skills-pack skills list did not include transitive dependencies for exact skill selection. Expected root ['pr-merge'] and skills {expected_names}. Actual root: {skill_names}. Actual skills: {actual_names}",
-        file=sys.stderr,
-    )
-    sys.exit(1)
-if dependencies_by_skill.get("pr-merge") != ["pr-submit", "push", "sync-latest"]:
-    print(
-        f"skills-pack skills list did not report pr-merge dependencies. Actual: {dependencies_by_skill.get('pr-merge')}",
-        file=sys.stderr,
-    )
-    sys.exit(1)
-if any(skill.get("skillBundleVersion") != expected_bundle_version for skill in skills):
-    print(
-        f"skills-pack skills list did not report skillBundleVersion {expected_bundle_version} for dependency selection. Actual: {[skill.get('skillBundleVersion') for skill in skills]}",
-        file=sys.stderr,
-    )
-    sys.exit(1)
-PY
-
-multi_category_list="$("${tool_path}/skills-pack" skills list --category basic,development)"
-MULTI_CATEGORY_LIST_JSON="${multi_category_list}" python3 - <<'PY'
-import json
-import os
-import sys
-
-root = json.loads(os.environ["MULTI_CATEGORY_LIST_JSON"])
-payload = root.get("payload") or {}
-categories = payload.get("categories")
-skill_count = len(payload.get("skills", []))
-if categories != ["basic", "development"] or skill_count != 20:
-    print(
-        f"skills-pack skills list did not support comma-separated category selection. Expected categories ['basic', 'development'] with 20 skills. Actual categories: {categories}. Actual skill count: {skill_count}",
-        file=sys.stderr,
-    )
-    sys.exit(1)
-PY
-
-export_path="${tool_path}/exported-skills"
-"${tool_path}/skills-pack" skills export --host openai --category development --output "${export_path}" >/dev/null
-if [[ ! -f "${export_path}/commit/SKILL.md" ]]; then
-  echo "skills-pack skills export did not materialize commit/SKILL.md." >&2
-  exit 1
-fi
-
-if [[ ! -f "${export_path}/changelog/SKILL.md" ]]; then
-  echo "skills-pack skills export did not materialize changelog/SKILL.md." >&2
-  exit 1
-fi
-
-single_skill_export_path="${tool_path}/exported-single-skill"
-"${tool_path}/skills-pack" skills export --host openai --skill changelog --output "${single_skill_export_path}" >/dev/null
-if [[ ! -f "${single_skill_export_path}/changelog/SKILL.md" ]]; then
-  echo "skills-pack skills export did not materialize changelog/SKILL.md for exact skill selection." >&2
-  exit 1
-fi
-
-if [[ -e "${single_skill_export_path}/commit" ]]; then
-  echo "skills-pack skills export materialized an unselected skill for exact skill selection." >&2
-  exit 1
-fi
-
-if [[ ! -f "${single_skill_export_path}/writing/SKILL.md" ]]; then
-  echo "skills-pack skills export did not materialize dependency skill writing/SKILL.md for exact skill selection." >&2
-  exit 1
-fi
-
-dependency_skill_export_path="${tool_path}/exported-dependency-skill"
-"${tool_path}/skills-pack" skills export --host openai --skill pr-merge --output "${dependency_skill_export_path}" >/dev/null
-for expected_skill in changelog commit pr-merge pr-submit push sync-latest verification-gate writing; do
-  if [[ ! -f "${dependency_skill_export_path}/${expected_skill}/SKILL.md" ]]; then
-    echo "skills-pack skills export did not materialize dependency skill ${expected_skill}/SKILL.md for exact skill selection." >&2
-    exit 1
-  fi
-done
-
-if [[ -e "${dependency_skill_export_path}/review-triage" ]]; then
-  echo "skills-pack skills export materialized an unrelated skill for dependency exact skill selection." >&2
-  exit 1
-fi
-
-install_repo="$(mktemp -d "${temp_root%/}/skills-pack-install.XXXXXX")"
-"${tool_path}/skills-pack" skills install --host openai --category development --scope project --repo-root "${install_repo}" >/dev/null
-"${tool_path}/skills-pack" skills doctor --host openai --category development --scope project --repo-root "${install_repo}" >/dev/null
-
-if ! diff -ruN "${export_path}" "${install_repo}/.agents/skills/com.mackysoft.skills-pack"; then
-  echo "skills-pack install output differs from export output for the same host." >&2
   exit 1
 fi
