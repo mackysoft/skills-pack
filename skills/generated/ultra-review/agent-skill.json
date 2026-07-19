@@ -7,11 +7,12 @@
   "displayName": "Ultra Review",
   "description": "タスク完了前の成果物、変更差分、または指定範囲に対し、指定された重点観点と対象から導いた失敗可能性を複数のサブエージェントで最終点検する。所見の妥当性と今回の対象との関係をトリアージし、対象内の修正、検証、再レビューを収束させる。任意の対象や観点を指定した深いレビュー、修正込みレビュー、または ultra-review が求められたときに使う。編集禁止やレビューのみの指定がある場合は所見と対応方針だけを返す。",
   "dependencies": [
+    "referent-modeling",
     "review-triage",
     "writing"
   ],
-  "contentDigest": "5d9f6a4e0d3c92262d739641abf8ce68a326aa888fb09fe0f10afa13faf5c62d",
-  "manifestDigest": "00a1f2bb00b6a3399f3aac199209110e75f2e9560f7d627b188c882e0445d736",
+  "contentDigest": "a4ec8802ae27dca8e1bc1cd343c69c01a48c5922c6bc8a3a53ae3f223a7b2e58",
+  "manifestDigest": "0a45bce072c33e4569df3a9b39b31d9e3819d4e6a7febe46a9a1e93ca46d84ed",
   "hostArtifacts": [
     {
       "host": "claude",

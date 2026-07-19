@@ -59,7 +59,7 @@ SkillsPack includes these reusable skills:
 
 | Skill | Category | Purpose |
 | --- | --- | --- |
-| `branch-create` | `development` | Create or reuse task branches with repository naming rules. |
+| `branch-create` | `development` | Create or reuse task branches while preserving detached or uncommitted work. |
 | `changelog` | `development` | Write reader-facing changelogs, release notes, and PR change summaries. |
 | `code-authoring-rules` | `development` | Apply language-independent code design and authoring rules. |
 | `commit` | `development` | Create responsibility-scoped Conventional Commit messages. |
@@ -69,10 +69,11 @@ SkillsPack includes these reusable skills:
 | `pr-submit` | `development` | Verify, push, and create or update pull requests. |
 | `pr-merge` | `development` | Merge pull requests through CI and branch cleanup. |
 | `push` | `development` | Commit pending work when needed and push the current branch safely. |
+| `referent-modeling` | `basic` | Ground new terms and abstractions in concrete referents, roles, and relationships before naming. |
 | `review-triage` | `development` | Triage review comments against code, specifications, and evidence. |
 | `skill-authoring` | `development` | Create, update, and review behaviorally effective agent skills. |
 | `skill-usage-analysis` | `development` | Analyze real agent usage and identify evidence-backed skill improvements. |
-| `sync-latest` | `development` | Fetch origin and safely synchronize the current branch with the right base. |
+| `sync-latest` | `development` | Fetch remotes and safely synchronize the target worktree with the right base. |
 | `test-authoring` | `development` | Design, update, and consolidate minimal contract-based test suites. |
 | `ultra-review` | `development` | Run deeper multi-pass review and apply safe fixes. |
 | `unity-authoring-rules` | `development` | Apply Unity-specific implementation and review judgment rules with C# rules. |
