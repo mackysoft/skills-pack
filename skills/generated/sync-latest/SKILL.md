@@ -1,41 +1,90 @@
 # sync-latest
 
 ## 目的
-現在ブランチの最新性が作業の前提になる場面で状態を確認し、必要な場合だけ適切な基準を取り込む。
+対象 worktree と同期基準を固定し、取得した同期基準を対象 worktree の `HEAD` が含む状態へ安全に更新する。
 
 ## フロー
 
-### Phase 1: 作業状態を確認する
-- detached HEAD では停止する。
+### Phase 1: 対象 worktree と作業状態を確認する
+ユーザーが指定した worktree、または作業開始時の worktree root の絶対パスを同期対象として固定する。
+fetch、同期、最終確認は同じ対象 worktree で行う。
+別の clone や worktree の状態は、対象 worktree の同期完了を示す証拠にしない。
+
 - `origin` が存在することを確認する。
-- 現在ブランチ、upstream、open PR、既定ブランチ、指定ブランチ、未コミット差分を確認する。
-- 同期で上書きされうる未コミット差分がある場合は停止し、先に `$commit` で保護する。
+- `HEAD`、ブランチまたは detached HEAD、upstream、open PR、既定ブランチ、指定ブランチ、未コミット差分、未解決の競合を確認する。
+- detached HEAD であることだけを理由に停止しない。
+- 最新状態を取得する前に、未コミット差分を commit、stash、破棄しない。
 
 ### Phase 2: 最新状態を取得する
 `git fetch origin --prune` で remote-tracking branch を更新する。
+同期基準に使う upstream が `origin` 以外の remote-tracking branch である場合は、その remote も取得する。
 判断に必要な場合だけ tag も取得する。
 前提確認なしに `git pull` を使わない。
 
+同期基準は、次の規則で fetch 後の ref と commit OID に解決する。
+
+- upstream は設定されている ref を使う。remote-tracking ref なら、その remote を fetch した後の OID を使う。
+- PR base と既定ブランチは、fetch 後の `refs/remotes/origin/<branch>` とその OID を使う。名前が同じローカルブランチへフォールバックしない。
+- 指定ブランチが `refs/remotes/<remote>/<branch>` 形式、または先頭要素が設定済み remote 名と一致する `<remote>/<branch>` 形式なら、その remote を fetch して `refs/remotes/<remote>/<branch>` の OID を使う。
+- それ以外の指定ブランチ名は、スラッシュを含む場合も `origin` 上のブランチ名として扱い、fetch 後の `refs/remotes/origin/<branch>` に解決する。名前が同じローカルブランチへフォールバックしない。
+
+fetch、必要な remote-tracking ref、または OID の解決に失敗した場合は、対象 worktree の `HEAD` を変更せず停止する。
+
 ### Phase 3: 最新化の要否と基準を決める
 
-| 状態 | 扱い |
-| --- | --- |
-| ブランチが指定されている | 指定ブランチを同期基準にする。 |
-| upstream があり、現在ブランチが behind している | upstream branch を同期基準にする。 |
-| open PR があり、現在ブランチが PR base に対して behind している | PR の base branch を同期基準にする。 |
-| 現在ブランチが既定ブランチであり、`origin/<default>` に対して behind している | `origin/<default>` を同期基準にする。 |
-| 作業ブランチに open PR がなく、`origin/<default>` に未取り込みの commit がある | `origin/<default>` を同期基準にする。 |
-| 取り込むべき基準がない | 同期不要として進む。 |
+ブランチ上では、upstream を最初の同期基準にする。
+その後に使う統合基準は、次の優先順位で一つ選ぶ。
 
-複数該当する場合は、upstream を先に同期し、その後に PR base または既定ブランチを同期する。
+1. 指定ブランチ。
+2. open PR がある場合は PR base。
+3. それ以外は既定ブランチ。
+
+detached HEAD では upstream と open PR を推定せず、指定ブランチがあればそのブランチ、なければ既定ブランチを唯一の同期基準にする。
+
+各同期基準について `git rev-list --left-right --count HEAD...<基準 OID>` を確認する。
+左を対象 `HEAD` のみにある commit 数、右を同期基準のみにある commit 数として扱う。
+右が 0 の基準は取り込み不要とし、すべての基準で右が 0 なら同期操作は不要である。
+
+ブランチ上で複数の基準を使う場合は、upstream、統合基準の順に同期する。
 
 ### Phase 4: 同期する
-- 現在ブランチが同期基準そのものなら fast-forward のみ行う。
-- 作業ブランチでは同期基準を現在ブランチへ merge する。
-- 同期不要の場合は merge しない。
+
+#### ブランチを同期する
+- 取り込む commit があり、同期で上書きされうる未コミット差分がある場合は、先に `$commit` で保護する。保護できない場合は同期せず停止する。
+- 現在ブランチが統合基準そのものに対応するローカルブランチなら、fast-forward のみ行う。
+- 作業ブランチでは、upstream と統合基準の OID を現在ブランチへ merge する。
+- 取り込み不要な基準は merge しない。
 - 既に共有済みのブランチでは履歴を書き換えない。
 - `--force` と `--force-with-lease` は使わない。
-- 衝突した場合は、同期後に予定していた後続操作へ進まない。
+- 衝突した場合は未解決として停止し、予定していた後続操作へ進まない。
 
-### Phase 5: 状態を残す
-同期した基準ブランチ、同期前後の ahead / behind、作成された merge commit の有無、衝突または未解決事項、次に進める作業を残す。
+#### detached HEAD を同期する
+同期基準のみにある commit 数が 0 の場合は、detached HEAD を移動しない。
+同期基準のみに commit がある場合は、次のすべてを満たす場合だけ detached HEAD を同期基準の OID へ進める。
+
+- 未コミット差分と未解決の競合がない。
+- 現在の `HEAD` が同期基準の OID の祖先である。
+
+現在の `HEAD` と同期基準の OID が等しい場合は移動しない。
+祖先である場合は `git switch --detach <同期基準の OID>` を使い、ブランチ ref を作成または更新せず対象 worktree の detached HEAD を移動する。
+
+同期基準のみに commit があり、未コミット差分がある場合、または現在の `HEAD` が同期基準の祖先でない場合は、現在の `HEAD` と差分を変更せず停止する。
+独自 commit または未コミット差分を保持するブランチを先に作成する必要があると報告する。
+ブランチの作成または接続はこのスキルでは行わない。
+
+別の clone や worktree で同期を続ける場合、その場所は別の同期対象として扱う。
+元の対象 worktree を変更できなければ、元の対象は未同期のまま停止したと報告する。
+
+### Phase 5: 完了状態を確認する
+次をすべて満たした場合だけ、対象 worktree の同期が完了したと判断する。
+
+- fetch、同期、最終確認を、Phase 1 で固定した対象 worktree で実行している。
+- 選択したすべての同期基準の OID が、対象 worktree の最終 `HEAD` の祖先である。
+- upstream があるブランチでは、upstream のみにある commit 数が 0 である。
+- detached HEAD を移動した場合は、最終 `HEAD` が同期基準の OID と一致する。
+- 未解決の競合がない。
+
+別の clone や worktree だけが条件を満たしても、対象 worktree の同期完了とは判断しない。
+
+### Phase 6: 状態を残す
+対象 worktree の絶対パス、ブランチまたは detached HEAD、同期基準の ref と OID、比較対象を明記した同期前後の ahead / behind、作成された merge commit の有無、完了または停止理由、次に進める作業を残す。
