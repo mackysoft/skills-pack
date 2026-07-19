@@ -7,10 +7,11 @@
   "displayName": "Code Authoring Rules",
   "description": "ソースコードを実装、変更、レビューするときに、設計判断の根拠、責務と契約の境界、既存実装への収束、意味を持つ構造、依存関係と副作用、設計意図を残すコメントの判断規則を適用する。言語、フレームワーク、プロジェクト固有の規則と併用する。",
   "dependencies": [
+    "referent-modeling",
     "writing"
   ],
-  "contentDigest": "5d658014e0f0e166409e8ad37db512a2a487c5e0e9e19b82ad73cf2b49ed82e4",
-  "manifestDigest": "23dfec9c0e10fa6cd66fa0bf3523469cf2d820c545083eccb08dbbc4421f5f06",
+  "contentDigest": "61c5a64c4f9a94e88a8b2881847134b8f58edd88e1030c1895ebc984e15a40f1",
+  "manifestDigest": "f5a73233f5f95beaff5a56bb83cdeaa008e534378dd9d160e9d546e6774cd10e",
   "hostArtifacts": [
     {
       "host": "claude",

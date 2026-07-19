@@ -6,9 +6,11 @@
   "skillName": "writing",
   "displayName": "Writing",
   "description": "自然言語の文章を作成、変更、レビュー、要約、翻訳、ローカライズ、返信するときに、対象、読者、媒体、言語、出力形式を文章前提として固定し、意味保持、事実性、論理構造、文章構造、文体、表記を整える。会話、スレッド、コメント、メール、案内、告知、提案、報告、説明文、記事、原稿、専門文書などの文章成果物や、やりとりの読みやすさを改善したいときに使う。",
-  "dependencies": [],
-  "contentDigest": "49629c4e3c8aa0e041b8937d10dc10bdeb1b27c4ca86e24a914d083b08f17c5d",
-  "manifestDigest": "bea117bade3fe39fe923a4971a1cff2945e2f4016a2cd919815e38ee8ab7069b",
+  "dependencies": [
+    "referent-modeling"
+  ],
+  "contentDigest": "6cdcb9d9c37183dfc51755ffb6a3f3dcaa7c7680107f71d71bce2d41374c699d",
+  "manifestDigest": "423456c292aa1d9e75425f4f0da3ea9a9ea2d4f8641e6b66a2029168db2ea06a",
   "hostArtifacts": [
     {
       "host": "claude",
